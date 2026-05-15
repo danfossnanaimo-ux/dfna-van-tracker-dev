@@ -4,8 +4,16 @@
 <meta charset="UTF-8">
 <title>DFNA Avery DOCX QR Generator</title>
 
+<!-- Track whether docx.js loaded -->
+<script>
+window.docxLoaded = false;
+</script>
+
 <!-- THE ONLY CDN THAT EXPOSES window.docx -->
-<script src="https://unpkg.com/docx@8.3.2/build/index.umd.js"></script>
+<script src="https://unpkg.com/docx@8.3.2/build/index.umd.js"
+        onload="window.docxLoaded = true;"
+        onerror="alert('Failed to load docx.js — CDN blocked or unreachable');">
+</script>
 
 <!-- QR Code generator -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -65,6 +73,13 @@ function parseInput(text) {
 }
 
 async function generateDocx() {
+
+  // Ensure docx.js loaded
+  if (!window.docxLoaded || !window.docx) {
+    alert("docx.js did not load — check CDN or network");
+    return;
+  }
+
   const raw = document.getElementById("inputBox").value.trim();
   if (!raw) {
     alert("Paste employee list or upload CSV.");
