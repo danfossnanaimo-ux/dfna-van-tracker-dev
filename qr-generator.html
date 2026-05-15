@@ -71,9 +71,18 @@ async function generateDocx() {
   const lines = parseInput(raw);
 
   const {
-    Document, Packer, Paragraph, Table, TableRow, TableCell,
-    WidthType, AlignmentType, ImageRun, TextRun
-  } = docx;
+    Document,
+    Packer,
+    Paragraph,
+    Table,
+    TableRow,
+    TableCell,
+    WidthType,
+    AlignmentType,
+    ImageRun,
+    TextRun
+  } = window.docx;
+
 
   const doc = new Document({
     sections: []
