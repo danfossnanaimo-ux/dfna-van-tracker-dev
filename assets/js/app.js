@@ -4,6 +4,17 @@
 const DATA_URL =
   "https://raw.githubusercontent.com/danfossnanaimo-ux/dfna-van-tracker/refs/heads/main/data/locations.json?v=5";
 
+// NEW: Load logged-in user
+const STORAGE_KEY = "dfnaUser";
+let loggedInUser = null;
+
+try {
+  const userJson = localStorage.getItem(STORAGE_KEY);
+  if (userJson) loggedInUser = JSON.parse(userJson);
+} catch (e) {
+  console.warn("Invalid user session", e);
+}
+
 let map;
 let markerLookup = {};
 let userMarker = null;
@@ -19,7 +30,7 @@ let trackingSelectedVehicle = false;
 function initMap() {
   map = L.map("map", {
     zoomAnimation: true,
-    zoomControl: false   // REMOVE ZOOM SPINNER ENTIRELY
+    zoomControl: false
   }).setView([49.040359, -123.866226], 18);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -211,7 +222,6 @@ document.getElementById("vehicleDropdown").addEventListener("change", e => {
     }
   });
 
-  // Initial zoom to user + selected vehicle
   zoomToUserAndVehicle(selectedPos);
 });
 
@@ -262,7 +272,7 @@ function showAllVehicles() {
 }
 
 // -----------------------------------------------------
-// USER LOCATION (PULSING GREEN DOT — 200% SIZE)
+// USER LOCATION (PULSING GREEN DOT)
 // -----------------------------------------------------
 const userIcon = L.divIcon({
   className: "user-icon",
@@ -284,7 +294,11 @@ function updateUserLocation(lat, lon) {
     userMarker = L.marker(pos, { icon: userIcon }).addTo(map);
   }
 
-  // Auto-zoom tracking when user moves > 5m and a vehicle is selected
+  // NEW: Tag GPS uploads with employee ID
+  if (loggedInUser) {
+    console.log("GPS update tagged with:", loggedInUser);
+  }
+
   if (trackingSelectedVehicle && selectedVehicleName && markerLookup[selectedVehicleName]) {
     if (lastUserLatLng) {
       const moved = newLatLng.distanceTo(lastUserLatLng);
@@ -310,7 +324,7 @@ if (navigator.geolocation) {
 }
 
 // -----------------------------------------------------
-// FIXED ZOOM LOGIC (USER + VEHICLE)
+// FIXED ZOOM LOGIC
 // -----------------------------------------------------
 function zoomToUserAndVehicle(vehicleLatLng) {
   if (!userMarker) {
