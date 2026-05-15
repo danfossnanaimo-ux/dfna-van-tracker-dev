@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <title>DFNA Avery DOCX QR Generator</title>
 
-<script src="https://cdn.jsdelivr.net/npm/docx@8.3.2/build/index.umd.js"></script>
+<!-- THE ONLY CDN THAT EXPOSES window.docx -->
+<script src="https://unpkg.com/docx@8.3.2/build/index.umd.js"></script>
+
+<!-- QR Code generator -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
@@ -70,6 +73,7 @@ async function generateDocx() {
 
   const lines = parseInput(raw);
 
+  // Pull docx classes from window.docx
   const {
     Document,
     Packer,
@@ -82,7 +86,6 @@ async function generateDocx() {
     ImageRun,
     TextRun
   } = window.docx;
-
 
   const doc = new Document({
     sections: []
