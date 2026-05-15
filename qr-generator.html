@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DFNA Employee QR Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    padding: 20px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+  label {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 4px;
+    box-sizing: border-box;
+  }
+  button {
+    margin-top: 16px;
+    padding: 12px;
+    width: 100%;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+    background: #1e88e5;
+    color: #fff;
+  }
+  #payload {
+    margin-top: 12px;
+    font-family: monospace;
+    font-size: 14px;
+    word-break: break-all;
+  }
+  #qrcode {
+    margin-top: 20px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>DFNA Employee QR Generator</h1>
+
+<label>Full Name</label>
+<input id="fullName" placeholder="e.g., Allan Alves">
+
+<label>Division</label>
+<input id="division" placeholder="e.g., DFS2">
+
+<label>Employee Number</label>
+<input id="empNum" placeholder="e.g., ABTNU418RO32R">
+
+<button onclick="makeQR()">Generate QR Code</button>
+
+<div id="payload"></div>
+<div id="qrcode"></div>
+
+<script>
+function makeQR() {
+  const name = document.getElementById("fullName").value.trim();
+  const div = document.getElementById("division").value.trim();
+  const emp = document.getElementById("empNum").value.trim();
+
+  if (!name || !div || !emp) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  const text = `${name} / ${div} / ${emp}`;
+
+  document.getElementById("payload").textContent = text;
+  document.getElementById("qrcode").innerHTML = "";
+
+  new QRCode(document.getElementById("qrcode"), {
+    text: text,
+    width: 256,
+    height: 256
+  });
+}
+</script>
+
+</body>
+</html>
