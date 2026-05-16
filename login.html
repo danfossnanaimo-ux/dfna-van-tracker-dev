@@ -2,108 +2,55 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>DFNA QR Login</title>
-
+<title>DFNA Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://unpkg.com/html5-qrcode"></script>
-
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #0b1725;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
-  h1 {
-    margin-top: 24px;
-    font-size: 24px;
-  }
-  #reader {
-    width: 320px;
-    max-width: 90vw;
-    margin-top: 24px;
-  }
-  #status {
-    margin-top: 16px;
-    font-size: 16px;
-    opacity: 0.8;
-  }
-  button {
-    margin-top: 24px;
-    padding: 12px 20px;
-    font-size: 16px;
-    border-radius: 10px;
-    border: none;
-    background: #1e88e5;
-    color: #fff;
-  }
-</style>
-</head>
-<body>
-
-<h1>Scan Your DFNA Login QR</h1>
-<div id="reader"></div>
-<div id="status">Point your camera at your DFNA QR badge.</div>
-
-<button id="skipBtn">Skip (Dev Only)</button>
-
-<script>
-const STORAGE_KEY = "dfnaUser";
-
-function handleLoginPayload(text) {
-  // Expected format: "Full Name / Division / EmployeeNumber"
-  const parts = text.split(" / ");
-  if (parts.length !== 3) {
-    document.getElementById("status").textContent = "Invalid QR format.";
-    return;
-  }
-
-  const [fullName, division, employeeNum] = parts.map(p => p.trim());
-
-  const user = { fullName, division, employeeNum };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-
-  window.location.href = "index.html";
-}
-
-function startScanner() {
-  const html5QrCode = new Html5Qrcode("reader");
-
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    decodedText => {
-      html5QrCode.stop().then(() => {
-        handleLoginPayload(decodedText);
-      });
-    },
-    errorMessage => {
-      // ignore scan errors; they happen constantly while scanning
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        font-family: system-ui, sans-serif;
+        color: white;
     }
-  ).catch(err => {
-    document.getElementById("status").textContent = "Camera error: " + err;
-  });
-}
 
-document.getElementById("skipBtn").addEventListener("click", () => {
-  // Dev-only shortcut
-  const user = {
-    fullName: "Dev User",
-    division: "DEV",
-    employeeNum: "DEV-000"
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-  window.location.href = "index.html";
-});
+    #container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        opacity: 0;
+        animation: fadeIn 0.8s ease forwards;
+    }
 
-startScanner();
-</script>
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
 
-</body>
-</html>
+    #preview {
+        width: 320px;
+        height: 320px;
+        background: #111;
+        border-radius: 16px;
+        object-fit: cover;
+    }
+
+    #caption {
+        margin-top: 18px;
+        font-size: 22px;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    #spinner {
+        border: 6px solid rgba(255,255,255,0.2);
+        border-top: 6px solid white;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        animation: spin 0.8s linear infinite;
+        margin-bottom: 20px;
