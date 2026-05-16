@@ -5,17 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------
     const session = JSON.parse(localStorage.getItem("dfnaSession") || "{}");
 
-    console.log("Loaded session:", session);
+    let selectedVan = session?.vanNumber?.toString() || null;
 
-    let selectedVan = null;
-
-    if (session && session.vanNumber) {
-        selectedVan = session.vanNumber.toString();
-    } else {
-        console.warn("No vanNumber in session");
-    }
-
-    // Display session info
     const sessionBox = document.getElementById("sessionInfo");
     sessionBox.innerText =
         `User: ${session.user?.name || "??"} | Van: ${selectedVan || "??"}`;
@@ -32,17 +23,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // -------------------------------
-    // ICONS (LABEL OVERLAY)
+    // MARKER ICONS
     // -------------------------------
     const vanIcon = (number, opacity = 1.0, isSelected = false) =>
         L.divIcon({
             html: `
                 <div style="
-                    position: relative;
                     width: 34px;
                     height: 34px;
                     border-radius: 50%;
-                    background: ${isSelected ? "#00ff00" : "#007bff"};
+                    background: ${isSelected ? "#00c853" : "#1976d2"};
                     opacity: ${opacity};
                     display: flex;
                     align-items: center;
@@ -51,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     font-weight: bold;
                     font-size: 14px;
                     border: 2px solid white;
+                    box-shadow: 0 0 6px rgba(0,0,0,0.4);
                 ">
                     ${number}
                 </div>
@@ -58,6 +49,22 @@ document.addEventListener("DOMContentLoaded", () => {
             className: "",
             iconSize: [34, 34]
         });
+
+
+    // USER MARKER (PULSING GREEN DOT)
+    const userIcon = L.divIcon({
+        html: `
+            <div class="user-pulse">
+                <div class="pulse-ring"></div>
+                <div class="inner-dot"></div>
+            </div>
+        `,
+        className: "",
+        iconSize: [128, 128],
+        iconAnchor: [64, 64]
+    });
+
+    let userMarker = null;
 
 
     // -------------------------------
@@ -80,21 +87,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------
     // LOAD VAN LOCATIONS
     // -------------------------------
-    fetch("/dfna-van-tracker-dev/data/locations.json?v=6")
+    fetch("/dfna-van-tracker-dev/data/locations.json?v=7")
         .then(res => {
             if (!res.ok) throw new Error("Failed to fetch JSON: " + res.status);
             return res.json();
         })
         .then(vans => {
-            console.log("Loaded vans:", vans);
 
-            // Find selected van first
+            // Find selected van coordinates
             let selectedLat = null;
             let selectedLng = null;
 
             vans.forEach(van => {
                 const vanNum = van.name.split(" ")[0];
-
                 if (vanNum === selectedVan) {
                     selectedLat = van.gps.latitude;
                     selectedLng = van.gps.longitude;
@@ -106,8 +111,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Auto-zoom to selected van
+            // Store globally for user zoom sync
+            window.selectedVanLat = selectedLat;
+            window.selectedVanLng = selectedLng;
+
+            // Zoom to selected van initially
             map.setView([selectedLat, selectedLng], 17);
+
 
             // Render vans
             vans.forEach(van => {
@@ -134,12 +144,23 @@ document.addEventListener("DOMContentLoaded", () => {
                     }).addTo(map);
                 }
 
-                // All other vans are hidden
+                // All other vans hidden
             });
+
         })
         .catch(err => {
             console.error("Error loading van locations:", err);
             sessionBox.innerText = "Error loading van data";
         });
 
-});
+
+    // -------------------------------
+    // USER LOCATION TRACKING
+    // -------------------------------
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(pos => {
+
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+
+            if
