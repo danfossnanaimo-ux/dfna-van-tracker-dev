@@ -48,19 +48,67 @@
     <p id="caption">Scan ID Card to Login</p>
 </div>
 
-<script src="https://unpkg.com/qr-scanner/qr-scanner.min.js"></script>
+<!-- FIXED, STABLE QR-SCANNER VERSION -->
+<script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+
 <script>
     const video = document.getElementById("preview");
     let scanner;
 
     async function startScanner() {
+        console.log("Starting scanner...");
+
         try {
             scanner = new QrScanner(video, result => handleScan(result), {
                 preferredCamera: "environment"
             });
 
             await scanner.start();
+            console.log("Camera started");
 
         } catch (err) {
             console.warn("Environment camera failed, trying default...", err);
-            fallback
+            fallbackToDefaultCamera();
+        }
+    }
+
+    async function fallbackToDefaultCamera() {
+        try {
+            scanner = new QrScanner(video, result => handleScan(result), {
+                preferredCamera: "auto"
+            });
+
+            await scanner.start();
+            console.log("Fallback camera started");
+
+        } catch (err) {
+            console.error("Camera failed:", err);
+        }
+    }
+
+    function handleScan(text) {
+        scanner.stop();
+
+        const parts = text.split("/");
+        if (parts.length < 3) {
+            alert("Invalid QR format");
+            startScanner();
+            return;
+        }
+
+        const user = {
+            name: parts[0].trim(),
+            division: parts[1].trim(),
+            employeeId: parts[2].trim()
+        };
+
+        localStorage.setItem("dfnaUser", JSON.stringify(user));
+
+        window.location.href = "index.html";
+    }
+
+    window.onload = startScanner;
+</script>
+
+</body>
+</html>
