@@ -40,7 +40,6 @@
         text-align: center;
     }
 
-    /* FULLSCREEN ERROR OVERLAY */
     #errorOverlay {
         position: fixed;
         top: 0;
@@ -80,7 +79,9 @@
 <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
 
 <script>
-    const LOOKUP_URL = "YOUR_APPS_SCRIPT_URL_HERE"; 
+    // ⭐⭐ PASTE YOUR EXACT APPS SCRIPT URL BELOW ⭐⭐
+    const LOOKUP_URL = "https://script.google.com/macros/s/AKfycbxW9NwuYgTyUBc2PFFn8dEx8ZemrPRKOnyhuuVmyMtGHtQhpA__J-97p0E_eSHnwJcn/exec";
+
     const video = document.getElementById("preview");
     const errorOverlay = document.getElementById("errorOverlay");
     let scanner;
@@ -118,11 +119,22 @@
     }
 
     async function handleScan(vin) {
-        alert("RAW SCAN: [" + vin + "]");
         scanner.stop();
 
-        vin = vin.trim();
-        console.log("Scanned VIN:", vin);
+        console.log("RAW SCAN:", JSON.stringify(vin));
+
+        // Remove invisible characters
+        vin = vin
+            .replace(/[\u200B-\u200D\uFEFF]/g, "")
+            .replace(/\s+/g, "")
+            .trim();
+
+        console.log("CLEAN VIN:", vin);
+
+        if (vin.length < 10) {
+            showError("Invalid Vehicle");
+            return;
+        }
 
         try {
             const url = `${LOOKUP_URL}?vin=${encodeURIComponent(vin)}`;
@@ -145,7 +157,6 @@
                 return;
             }
 
-            const vanNumber = data.vanNumber;
             const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
 
             if (!user.name) {
@@ -156,8 +167,8 @@
             const session = {
                 user,
                 vin,
-                vanNumber,
-                numericVan: vanNumber
+                vanNumber: data.vanNumber,
+                numericVan: data.vanNumber
             };
 
             localStorage.setItem("dfnaSession", JSON.stringify(session));
