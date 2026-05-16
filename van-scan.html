@@ -121,7 +121,7 @@
     async function handleScan(vin) {
         scanner.stop();
         alert("LOOKUP URL:\n" + LOOKUP_URL + "?vin=" + vin);
-        console.log("RAW SCAN:", JSON.stringify(vin));
+        // console.log("RAW SCAN:", JSON.stringify(vin));
 
         // Remove invisible characters
         vin = vin
