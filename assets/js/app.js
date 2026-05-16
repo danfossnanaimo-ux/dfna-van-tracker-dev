@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------
     // LOAD VAN LOCATIONS
     // -------------------------------
-    fetch("data/locations.json")
+    fetch("/dfna-van-tracker-dev/data/locations.json")
         .then(res => res.json())
         .then(vans => {
             console.log("Loaded vans:", vans);
