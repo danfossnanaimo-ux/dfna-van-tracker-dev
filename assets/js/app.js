@@ -1,15 +1,28 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // -------------------------------
-    // LOAD SESSION
+    // LOAD SESSION (NO OPTIONAL CHAINING)
     // -------------------------------
-    const session = JSON.parse(localStorage.getItem("dfnaSession") || "{}");
+    let session = {};
+    try {
+        session = JSON.parse(localStorage.getItem("dfnaSession") || "{}");
+    } catch (e) {
+        console.warn("Failed to parse session:", e);
+        session = {};
+    }
 
-    let selectedVan = session?.vanNumber?.toString() || null;
+    let selectedVan = null;
+    if (session && session.vanNumber) {
+        selectedVan = String(session.vanNumber);
+    }
 
     const sessionBox = document.getElementById("sessionInfo");
-    sessionBox.innerText =
-        `User: ${session.user?.name || "??"} | Van: ${selectedVan || "??"}`;
+    const userName =
+        session && session.user && session.user.name
+            ? session.user.name
+            : "??";
+
+    sessionBox.innerText = "User: " + userName + " | Van: " + (selectedVan || "??");
 
 
     // -------------------------------
@@ -25,8 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------
     // MARKER ICONS
     // -------------------------------
-    const vanIcon = (number, opacity = 1.0, isSelected = false) =>
-        L.divIcon({
+    const vanIcon = function (number, opacity, isSelected) {
+        return L.divIcon({
             html: `
                 <div style="
                     width: 34px;
@@ -49,9 +62,8 @@ document.addEventListener("DOMContentLoaded", () => {
             className: "",
             iconSize: [34, 34]
         });
+    };
 
-
-    // USER MARKER (PULSING GREEN DOT)
     const userIcon = L.divIcon({
         html: `
             <div class="user-pulse">
@@ -68,17 +80,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // -------------------------------
-    // DISTANCE FUNCTION (meters)
+    // DISTANCE FUNCTION
     // -------------------------------
     function distanceMeters(lat1, lon1, lat2, lon2) {
         const R = 6371000;
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
         const a =
-            Math.sin(dLat / 2) ** 2 +
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
             Math.cos(lat1 * Math.PI / 180) *
             Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLon / 2) ** 2;
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
 
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
@@ -87,18 +99,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------
     // LOAD VAN LOCATIONS
     // -------------------------------
-    fetch("/dfna-van-tracker-dev/data/locations.json?v=7")
-        .then(res => {
+    fetch("/dfna-van-tracker-dev/data/locations.json?v=9")
+        .then(function (res) {
             if (!res.ok) throw new Error("Failed to fetch JSON: " + res.status);
             return res.json();
         })
-        .then(vans => {
+        .then(function (vans) {
 
-            // Find selected van coordinates
             let selectedLat = null;
             let selectedLng = null;
 
-            vans.forEach(van => {
+            // Find selected van
+            vans.forEach(function (van) {
                 const vanNum = van.name.split(" ")[0];
                 if (vanNum === selectedVan) {
                     selectedLat = van.gps.latitude;
@@ -111,16 +123,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Store globally for user zoom sync
             window.selectedVanLat = selectedLat;
             window.selectedVanLng = selectedLng;
 
-            // Zoom to selected van initially
             map.setView([selectedLat, selectedLng], 17);
 
-
             // Render vans
-            vans.forEach(van => {
+            vans.forEach(function (van) {
                 const vanNum = van.name.split(" ")[0];
                 const lat = van.gps.latitude;
                 const lng = van.gps.longitude;
@@ -129,7 +138,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
 
-                // Selected van
                 if (vanNum === selectedVan) {
                     L.marker([lat, lng], {
                         icon: vanIcon(vanNum, 1.0, true)
@@ -137,18 +145,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // Nearby vans (within 10 meters)
                 if (dist <= 10) {
                     L.marker([lat, lng], {
                         icon: vanIcon(vanNum, 0.3, false)
                     }).addTo(map);
                 }
-
-                // All other vans hidden
             });
 
         })
-        .catch(err => {
+        .catch(function (err) {
             console.error("Error loading van locations:", err);
             sessionBox.innerText = "Error loading van data";
         });
@@ -158,9 +163,34 @@ document.addEventListener("DOMContentLoaded", () => {
     // USER LOCATION TRACKING
     // -------------------------------
     if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(pos => {
+        navigator.geolocation.watchPosition(
+            function (pos) {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
 
-            const lat = pos.coords.latitude;
-            const lng = pos.coords.longitude;
+                if (!userMarker) {
+                    userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
+                } else {
+                    userMarker.setLatLng([lat, lng]);
+                }
 
-            if
+                if (window.selectedVanLat && window.selectedVanLng) {
+                    const bounds = L.latLngBounds([
+                        [lat, lng],
+                        [window.selectedVanLat, window.selectedVanLng]
+                    ]);
+                    map.fitBounds(bounds, { padding: [80, 80] });
+                }
+            },
+            function (err) {
+                console.warn("User location unavailable:", err);
+            },
+            {
+                enableHighAccuracy: true,
+                maximumAge: 1000,
+                timeout: 5000
+            }
+        );
+    }
+
+});
