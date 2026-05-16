@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Driver Login</title>
+</head>
+<body>
+
+<div id="scanner"></div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<script>
+function showGreeting(firstName) {
+    document.body.innerHTML = `
+        <div style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            font-size:32px;
+            text-align:center;
+            font-weight:bold;
+        ">
+            Hello,<br>${firstName}
+        </div>
+    `;
+
+    setTimeout(() => {
+        window.location.href = "van-scan.html";
+    }, 2000);
+}
+
+function startDriverScanner() {
+    const scanner = new Html5Qrcode("scanner");
+
+    scanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+
+            // Example QR format: "DRIVER|Kelly Johnson"
+            const parts = decodedText.split("|");
+            const firstName = parts[1].split(" ")[0];
+
+            // Save session
+            localStorage.setItem("dfnaSession", JSON.stringify({
+                user: { name: parts[1] }
+            }));
+
+            scanner.stop();
+
+            // SHOW THE MESSAGE SCREEN
+            showGreeting(firstName);
+        }
+    );
+}
+
+startDriverScanner();
+</script>
+
+</body>
+</html>
