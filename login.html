@@ -59,7 +59,7 @@
         console.log("Starting scanner...");
 
         try {
-            scanner = new QrScanner(video, result => handleScan(result), {
+            scanner = new QrScanner(video, result => handleScan(result.data), {
                 preferredCamera: "environment"
             });
 
@@ -74,7 +74,7 @@
 
     async function fallbackToDefaultCamera() {
         try {
-            scanner = new QrScanner(video, result => handleScan(result), {
+            scanner = new QrScanner(video, result => handleScan(result.data), {
                 preferredCamera: "auto"
             });
 
