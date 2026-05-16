@@ -37,47 +37,48 @@
             height: calc(100% - 50px);
         }
 
-        /* USER MARKER — PULSING GREEN DOT */
-        .user-pulse {
-            position: relative;
-            width: 128px;
-            height: 128px;
-        }
+/* USER MARKER — SMALL PULSING GREEN DOT */
+.user-pulse {
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
 
-        .user-pulse .inner-dot {
-            position: absolute;
-            width: 64px;
-            height: 64px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background: #00ff00;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(0,255,0,0.8);
-        }
+.user-pulse .inner-dot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #00ff00;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(0,255,0,0.8);
+}
 
-        .user-pulse .pulse-ring {
-            position: absolute;
-            width: 96px;
-            height: 96px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background: rgba(0,255,0,0.3);
-            animation: pulse 2s infinite ease-out;
-        }
+.user-pulse .pulse-ring {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: rgba(0,255,0,0.3);
+    animation: pulse 2s infinite ease-out;
+}
 
-        @keyframes pulse {
-            0% {
-                transform: translate(-50%, -50%) scale(0.6);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1.8);
-                opacity: 0;
-            }
-        }
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0.6);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.6);
+        opacity: 0;
+    }
+}
+
     </style>
 </head>
 
