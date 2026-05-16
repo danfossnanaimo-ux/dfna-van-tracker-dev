@@ -54,3 +54,118 @@
         height: 48px;
         animation: spin 0.8s linear infinite;
         margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    #flashBtn {
+        margin-top: 14px;
+        padding: 10px 20px;
+        background: #1e88e5;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        display: none;
+    }
+</style>
+</head>
+
+<body>
+
+<div id="container">
+    <div id="spinner"></div>
+    <video id="preview" autoplay playsinline></video>
+    <p id="caption">Scan ID Card to Login</p>
+    <button id="flashBtn">Toggle Flashlight</button>
+</div>
+
+<script src="https://unpkg.com/qr-scanner/qr-scanner.min.js"></script>
+<script>
+    const video = document.getElementById("preview");
+    const spinner = document.getElementById("spinner");
+    const flashBtn = document.getElementById("flashBtn");
+
+    let scanner;
+    let torchOn = false;
+
+    async function startScanner() {
+        try {
+            scanner = new QrScanner(video, result => handleScan(result), {
+                preferredCamera: "environment",
+                highlightScanRegion: true,
+                highlightCodeOutline: true
+            });
+
+            await scanner.start();
+
+            spinner.style.display = "none";
+
+            const hasFlash = await scanner.hasFlash();
+            if (hasFlash) flashBtn.style.display = "block";
+
+        } catch (err) {
+            console.warn("Environment camera failed, retrying with default camera...", err);
+            fallbackToDefaultCamera();
+        }
+    }
+
+    async function fallbackToDefaultCamera() {
+        try {
+            scanner = new QrScanner(video, result => handleScan(result), {
+                preferredCamera: "auto"
+            });
+
+            await scanner.start();
+
+            spinner.style.display = "none";
+            flashBtn.style.display = "none";
+
+        } catch (err) {
+            console.error("Camera error:", err);
+            retryCamera();
+        }
+    }
+
+    function retryCamera() {
+        spinner.style.display = "block";
+        setTimeout(startScanner, 1500);
+    }
+
+    flashBtn.addEventListener("click", async () => {
+        torchOn = !torchOn;
+        await scanner.setFlash(torchOn);
+    });
+
+    function handleScan(text) {
+        scanner.stop();
+
+        const parts = text.split("/");
+        if (parts.length < 3) {
+            alert("Invalid QR format");
+            startScanner();
+            return;
+        }
+
+        const user = {
+            name: parts[0].trim(),
+            division: parts[1].trim(),
+            employeeId: parts[2].trim()
+        };
+
+        localStorage.setItem("dfnaUser", JSON.stringify(user));
+
+        window.location.href = "index.html";
+    }
+
+    // Delay scanner start until fade-in completes (fixes Edge black screen)
+    document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(startScanner, 300);
+    });
+</script>
+
+</body>
+</html>
