@@ -1,368 +1,77 @@
-// -----------------------------------------------------
-// CONFIG
-// -----------------------------------------------------
-const DATA_URL =
-  "https://raw.githubusercontent.com/danfossnanaimo-ux/dfna-van-tracker/refs/heads/main/data/locations.json?v=5";
+// -------------------------------
+// LOAD SESSION
+// -------------------------------
+const session = JSON.parse(localStorage.getItem("dfnaSession") || "{}");
 
-// NEW: Load logged-in user
-const STORAGE_KEY = "dfnaUser";
-let loggedInUser = null;
+console.log("Loaded session:", session);
 
-try {
-  const userJson = localStorage.getItem(STORAGE_KEY);
-  if (userJson) loggedInUser = JSON.parse(userJson);
-} catch (e) {
-  console.warn("Invalid user session", e);
+let selectedVan = null;
+
+if (session && session.vanNumber) {
+    selectedVan = session.vanNumber.toString();
+} else {
+    console.warn("No vanNumber in session");
 }
 
-let map;
-let markerLookup = {};
-let userMarker = null;
-let selectedVehicleName = null;
-let lastLocations = [];
+// Display session info on screen
+const sessionBox = document.getElementById("sessionInfo");
+sessionBox.innerText =
+    `User: ${session.user?.name || "??"} | Van: ${selectedVan || "??"}`;
 
-let lastUserLatLng = null;
-let trackingSelectedVehicle = false;
 
-// -----------------------------------------------------
+// -------------------------------
 // INITIALIZE MAP
-// -----------------------------------------------------
-function initMap() {
-  map = L.map("map", {
-    zoomAnimation: true,
-    zoomControl: false
-  }).setView([49.040359, -123.866226], 18);
+// -------------------------------
+const map = L.map("map").setView([49.1659, -123.9401], 11);
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "© OpenStreetMap contributors"
-  }).addTo(map);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19
+}).addTo(map);
 
-  // YARD FENCE
-  L.polygon(
-    [
-      [49.0410015, -123.8680866],
-      [49.0410489, -123.8680984],
-      [49.0410934, -123.8680656],
-      [49.0411231, -123.8680275],
-      [49.041138,  -123.8679841],
-      [49.0411436, -123.867922],
-      [49.0411349, -123.8657126],
-      [49.0411261, -123.8653535],
-      [49.0411201, -123.865225],
-      [49.0411126, -123.865155],
-      [49.0410993, -123.8650879],
-      [49.0410815, -123.865035],
-      [49.041073,  -123.8650161],
-      [49.0410667, -123.8650087],
-      [49.0410459, -123.8649914],
-      [49.0410104, -123.8649743],
-      [49.0409566, -123.8649617],
-      [49.0407962, -123.8649522],
-      [49.0406169, -123.8649401],
-      [49.040469,  -123.8649408],
-      [49.0403253, -123.8649361],
-      [49.0401176, -123.8670691],
-      [49.0410045, -123.8680868],
-      [49.0410015, -123.8680866]
-    ],
-    {
-      color: "#ff0000",
-      weight: 3,
-      fillOpacity: 0.15
-    }
-  ).addTo(map);
-}
 
-// -----------------------------------------------------
-// FETCH BACKEND JSON
-// -----------------------------------------------------
-async function loadLocations() {
-  try {
-    const response = await fetch(DATA_URL);
-    const data = await response.json();
-    lastLocations = data;
-    updateMap(data);
-    updateDropdown(data);
-  } catch (err) {
-    console.error("Error loading locations:", err);
-  }
-}
-
-// -----------------------------------------------------
-// BUILD MARKER ICON (VANS)
-// -----------------------------------------------------
-function buildIcon(name, vanNumber) {
-  return L.divIcon({
-    className: "van-icon",
-    html: `
-      <div class="van-pin"></div>
-      <div class="van-number" id="num-${name}">
-        ${vanNumber}
-      </div>
-    `,
-    iconSize: [64, 64],
-    iconAnchor: [32, 64]
-  });
-}
-
-// -----------------------------------------------------
-// UPDATE MAP WITH BACKEND DATA
-// -----------------------------------------------------
-function updateMap(locations) {
-  const unique = {};
-
-  locations.forEach(v => {
-    if (!v.gps) return;
-    if (!v.gps.latitude || !v.gps.longitude || !v.gps.dateTime) return;
-
-    const key = v.name;
-    const ts = new Date(v.gps.dateTime);
-
-    if (!unique[key] || ts > new Date(unique[key].gps.dateTime)) {
-      unique[key] = v;
-    }
-  });
-
-  const cleanList = Object.values(unique);
-
-  cleanList.forEach(v => {
-    const lat = v.gps.latitude;
-    const lon = v.gps.longitude;
-    const pos = [lat, lon];
-
-    const vanNumber = v.name.match(/\d+(?!.*\d)/)?.[0] || "";
-
-    const icon = buildIcon(v.name, vanNumber);
-
-    if (!markerLookup[v.name]) {
-      const marker = L.marker(pos, { icon, opacity: 1 });
-      marker.addTo(map);
-      markerLookup[v.name] = marker;
-    } else {
-      markerLookup[v.name].setLatLng(pos);
-      markerLookup[v.name].setIcon(icon);
-    }
-  });
-}
-
-// -----------------------------------------------------
-// SORTED DROPDOWN
-// -----------------------------------------------------
-function updateDropdown(locations) {
-  const dropdown = document.getElementById("vehicleDropdown");
-  dropdown.innerHTML = "";
-
-  const showAllOpt = document.createElement("option");
-  showAllOpt.value = "__show_all__";
-  showAllOpt.textContent = "Show All";
-  dropdown.appendChild(showAllOpt);
-
-  const uniqueNames = [...new Set(locations.map(v => v.name))];
-
-  uniqueNames.sort((a, b) => {
-    const numA = parseInt(a.match(/\d+(?!.*\d)/)?.[0] || "0");
-    const numB = parseInt(b.match(/\d+(?!.*\d)/)?.[0] || "0");
-    return numA - numB;
-  });
-
-  uniqueNames.forEach(name => {
-    const opt = document.createElement("option");
-    opt.value = name;
-    opt.textContent = name;
-    dropdown.appendChild(opt);
-  });
-}
-
-// -----------------------------------------------------
-// DROPDOWN FILTERING + 10m PROXIMITY LOGIC
-// -----------------------------------------------------
-document.getElementById("vehicleDropdown").addEventListener("change", e => {
-  const dropdown = document.getElementById("vehicleDropdown");
-  const resetButton = document.getElementById("resetButton");
-  const navButton = document.getElementById("navButton");
-
-  const name = e.target.value;
-
-  if (name === "__show_all__") {
-    selectedVehicleName = null;
-    trackingSelectedVehicle = false;
-    navButton.style.display = "none";
-    showAllVehicles();
-    return;
-  }
-
-  dropdown.style.display = "none";
-  resetButton.style.display = "block";
-  navButton.style.display = "block";
-
-  selectedVehicleName = name;
-  trackingSelectedVehicle = true;
-
-  const selectedMarker = markerLookup[name];
-  const selectedPos = selectedMarker.getLatLng();
-
-  Object.keys(markerLookup).forEach(vName => {
-    const marker = markerLookup[vName];
-    const pos = marker.getLatLng();
-    const vanNumber = vName.match(/\d+(?!.*\d)/)?.[0] || "";
-
-    if (vName === name) {
-      marker.setOpacity(1);
-      marker.setIcon(buildIcon(vName, vanNumber));
-    } else {
-      const dist = selectedPos.distanceTo(pos);
-
-      if (dist <= 10) {
-        marker.setOpacity(0.3);
-        marker.setIcon(buildIcon(vName, vanNumber));
-      } else {
-        map.removeLayer(marker);
-      }
-    }
-  });
-
-  zoomToUserAndVehicle(selectedPos);
+// -------------------------------
+// ICONS
+// -------------------------------
+const normalIcon = L.icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854894.png",
+    iconSize: [32, 32]
 });
 
-// -----------------------------------------------------
-// RESET BUTTON
-// -----------------------------------------------------
-document.getElementById("resetButton").addEventListener("click", () => {
-  const dropdown = document.getElementById("vehicleDropdown");
-  const resetButton = document.getElementById("resetButton");
-  const navButton = document.getElementById("navButton");
-
-  dropdown.style.display = "block";
-  resetButton.style.display = "none";
-  navButton.style.display = "none";
-
-  dropdown.value = "__show_all__";
-  selectedVehicleName = null;
-  trackingSelectedVehicle = false;
-
-  Object.keys(markerLookup).forEach(vName => {
-    const marker = markerLookup[vName];
-    const vanNumber = vName.match(/\d+(?!.*\d)/)?.[0] || "";
-
-    marker.setOpacity(1);
-    marker.setIcon(buildIcon(vName, vanNumber));
-
-    map.addLayer(marker);
-  });
-
-  map.setView([49.040359, -123.866226], 18);
+const highlightIcon = L.icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854866.png",
+    iconSize: [42, 42]
 });
 
-// -----------------------------------------------------
-// SHOW ALL VEHICLES
-// -----------------------------------------------------
-function showAllVehicles() {
-  Object.keys(markerLookup).forEach(vName => {
-    const marker = markerLookup[vName];
-    const vanNumber = vName.match(/\d+(?!.*\d)/)?.[0] || "";
 
-    marker.setOpacity(1);
-    marker.setIcon(buildIcon(vName, vanNumber));
+// -------------------------------
+// LOAD VAN LOCATIONS
+// -------------------------------
+fetch("data/locations.json")
+    .then(res => res.json())
+    .then(vans => {
+        console.log("Loaded vans:", vans);
 
-    map.addLayer(marker);
-  });
+        vans.forEach(van => {
+            const vanNum = van.vanNumber.toString();
 
-  map.setView([49.040359, -123.866226], 18);
-}
+            // Highlight selected van
+            if (selectedVan && vanNum === selectedVan) {
+                console.log("Highlighting van:", vanNum);
 
-// -----------------------------------------------------
-// USER LOCATION (PULSING GREEN DOT)
-// -----------------------------------------------------
-const userIcon = L.divIcon({
-  className: "user-icon",
-  html: `
-    <div class="user-pulse-ring"></div>
-    <div class="user-dot"></div>
-  `,
-  iconSize: [128, 128],
-  iconAnchor: [64, 64]
-});
+                L.marker([van.lat, van.lng], { icon: highlightIcon })
+                    .addTo(map)
+                    .bindPopup(`Van ${vanNum}`);
 
-function updateUserLocation(lat, lon) {
-  const pos = [lat, lon];
-  const newLatLng = L.latLng(lat, lon);
-
-  if (userMarker) {
-    userMarker.setLatLng(pos);
-  } else {
-    userMarker = L.marker(pos, { icon: userIcon }).addTo(map);
-  }
-
-  // NEW: Tag GPS uploads with employee ID
-  if (loggedInUser) {
-    console.log("GPS update tagged with:", loggedInUser);
-  }
-
-  if (trackingSelectedVehicle && selectedVehicleName && markerLookup[selectedVehicleName]) {
-    if (lastUserLatLng) {
-      const moved = newLatLng.distanceTo(lastUserLatLng);
-      if (moved > 5) {
-        const vehicleLatLng = markerLookup[selectedVehicleName].getLatLng();
-        zoomToUserAndVehicle(vehicleLatLng);
-      }
-    } else {
-      const vehicleLatLng = markerLookup[selectedVehicleName].getLatLng();
-      zoomToUserAndVehicle(vehicleLatLng);
-    }
-  }
-
-  lastUserLatLng = newLatLng;
-}
-
-if (navigator.geolocation) {
-  navigator.geolocation.watchPosition(
-    pos => updateUserLocation(pos.coords.latitude, pos.coords.longitude),
-    err => console.warn("GPS error:", err.message),
-    { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
-  );
-}
-
-// -----------------------------------------------------
-// FIXED ZOOM LOGIC
-// -----------------------------------------------------
-function zoomToUserAndVehicle(vehicleLatLng) {
-  if (!userMarker) {
-    map.flyTo(vehicleLatLng, 18);
-    return;
-  }
-
-  const userLatLng = userMarker.getLatLng();
-  const bounds = L.latLngBounds([userLatLng, vehicleLatLng]);
-
-  map.flyToBounds(bounds, { padding: [80, 80] });
-}
-
-// -----------------------------------------------------
-// GOOGLE MAPS NAVIGATION BUTTON
-// -----------------------------------------------------
-document.getElementById("navButton").addEventListener("click", () => {
-  if (!userMarker || !selectedVehicleName || !markerLookup[selectedVehicleName]) {
-    return;
-  }
-
-  const userLatLng = userMarker.getLatLng();
-  const vehicleLatLng = markerLookup[selectedVehicleName].getLatLng();
-
-  const origin = `${userLatLng.lat},${userLatLng.lng}`;
-  const destination = `${vehicleLatLng.lat},${vehicleLatLng.lng}`;
-
-  const url =
-    `https://www.google.com/maps/dir/?api=1` +
-    `&origin=${encodeURIComponent(origin)}` +
-    `&destination=${encodeURIComponent(destination)}`;
-
-  window.open(url, "_blank");
-});
-
-// -----------------------------------------------------
-// STARTUP
-// -----------------------------------------------------
-initMap();
-loadLocations();
-setInterval(loadLocations, 30000);
+                map.setView([van.lat, van.lng], 15);
+            } else {
+                // Normal marker
+                L.marker([van.lat, van.lng], { icon: normalIcon })
+                    .addTo(map)
+                    .bindPopup(`Van ${vanNum}`);
+            }
+        });
+    })
+    .catch(err => {
+        console.error("Error loading van locations:", err);
+        sessionBox.innerText = "Error loading van data";
+    });
