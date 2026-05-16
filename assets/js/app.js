@@ -72,8 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `,
         className: "",
-        iconSize: [128, 128],
-        iconAnchor: [64, 64]
+        iconSize: [40, 40],
+        iconAnchor: [20, 20]
     });
 
     let userMarker = null;
