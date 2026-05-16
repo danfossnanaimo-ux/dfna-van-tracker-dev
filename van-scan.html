@@ -1,47 +1,26 @@
+---
+layout: none
+---
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Select Van</title>
-    <script src="https://unpkg.com/html5-qrcode?v=2"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #000;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
-
-        .title {
-            position: absolute;
-            top: 20px;
-            width: 100%;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 10;
-        }
-
         #scanner {
             width: 100vw;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
-
         #scanner > * {
             width: 100% !important;
             height: 100% !important;
         }
     </style>
 </head>
+<body style="margin:0; padding:0;">
 
-<body>
-
-<div class="title">Scan Van QR Code</div>
 <div id="scanner"></div>
 
 <script>
@@ -55,8 +34,6 @@ function showLocatingScreen(vanNumber) {
             font-size:32px;
             text-align:center;
             font-weight:bold;
-            background:#000;
-            color:#fff;
         ">
             Locating,<br>Van ${vanNumber}
         </div>
