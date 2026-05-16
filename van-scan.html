@@ -1,187 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Scan Van VIN</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: system-ui, sans-serif;
-        color: white;
-        overflow: hidden;
-    }
-
-    #container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    #preview {
-        width: 320px;
-        height: 320px;
-        background: #111;
-        border-radius: 16px;
-        object-fit: cover;
-    }
-
-    #caption {
-        margin-top: 18px;
-        font-size: 22px;
-        font-weight: 500;
-        text-align: center;
-    }
-
-    #errorOverlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0,0,0,0.85);
-        color: #ff4444;
-        font-size: 36px;
-        font-weight: bold;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        z-index: 9999;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease-out;
-    }
-
-    #errorOverlay.show {
-        opacity: 1;
-        pointer-events: auto;
-    }
-</style>
+    <meta charset="UTF-8">
+    <title>Select Van</title>
 </head>
-
 <body>
 
-<div id="container">
-    <video id="preview" autoplay playsinline></video>
-    <p id="caption">Scan Van VIN</p>
-</div>
+<div id="scanner"></div>
 
-<div id="errorOverlay"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
-    // ⭐⭐ PASTE YOUR EXACT APPS SCRIPT URL BELOW ⭐⭐
-    const LOOKUP_URL = "https://script.google.com/macros/s/AKfycbyco1pzHUDT1ZOgbcMeg_iLDAaQCUBv9QPnaFaRIuXq0qURjtwWRcOrZMwaul2k91gQ/exec";
+function showLocatingScreen(vanNumber) {
+    document.body.innerHTML = `
+        <div style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            font-size:32px;
+            text-align:center;
+            font-weight:bold;
+        ">
+            Locating,<br>Van ${vanNumber}
+        </div>
+    `;
 
-    const video = document.getElementById("preview");
-    const errorOverlay = document.getElementById("errorOverlay");
-    let scanner;
+    setTimeout(() => {
+        window.location.href = "index.html";
+    }, 2000);
+}
 
-    function showError(msg) {
-        errorOverlay.textContent = msg;
-        errorOverlay.classList.add("show");
+function startVanScanner() {
+    const scanner = new Html5Qrcode("scanner");
 
-        setTimeout(() => {
-            errorOverlay.classList.remove("show");
-            startScanner();
-        }, 2000);
-    }
+    scanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
 
-    async function startScanner() {
-        try {
-            scanner = new QrScanner(video, result => handleScan(result.data), {
-                preferredCamera: "environment"
-            });
-            await scanner.start();
-        } catch (err) {
-            fallbackToDefaultCamera();
-        }
-    }
+            // Example QR format: "VAN|209"
+            const parts = decodedText.split("|");
+            const vanNumber = parts[1];
 
-    async function fallbackToDefaultCamera() {
-        try {
-            scanner = new QrScanner(video, result => handleScan(result.data), {
-                preferredCamera: "auto"
-            });
-            await scanner.start();
-        } catch (err) {
-            console.error("Camera failed:", err);
-        }
-    }
-
-    async function handleScan(vin) {
-        scanner.stop();
-        //alert("LOOKUP URL:\n" + LOOKUP_URL + "?vin=" + vin);
-        console.log("RAW SCAN:", JSON.stringify(vin));
-
-        // Remove invisible characters
-        vin = vin
-            .replace(/[\u200B-\u200D\uFEFF]/g, "")
-            .replace(/\s+/g, "")
-            .trim();
-
-        console.log("CLEAN VIN:", vin);
-
-        if (vin.length < 10) {
-            showError("Invalid Vehicle");
-            return;
-        }
-
-        try {
-            const url = `${LOOKUP_URL}?vin=${encodeURIComponent(vin)}`;
-            console.log("Fetching:", url);
-
-            const response = await fetch(url);
-            const text = await response.text();
-            console.log("Raw response:", text);
-
-            let data;
-            try {
-                data = JSON.parse(text);
-            } catch (err) {
-                showError("Invalid Vehicle");
-                return;
-            }
-
-            if (!data.vanNumber) {
-                showError("Invalid Vehicle");
-                return;
-            }
-
-            const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
-
-            if (!user.name) {
-                showError("Invalid User");
-                return;
-            }
-
-            const session = {
-                user,
-                vin,
-                vanNumber: data.vanNumber,
-                numericVan: data.vanNumber
-            };
-
+            // Update session
+            const session = JSON.parse(localStorage.getItem("dfnaSession") || "{}");
+            session.vanNumber = vanNumber;
             localStorage.setItem("dfnaSession", JSON.stringify(session));
 
-            window.location.href = "index.html";
+            scanner.stop();
 
-        } catch (err) {
-            console.error(err);
-            showError("Invalid Vehicle");
+            // SHOW THE MESSAGE SCREEN
+            showLocatingScreen(vanNumber);
         }
-    }
+    );
+}
 
-    window.onload = startScanner;
+startVanScanner();
 </script>
 
 </body>
