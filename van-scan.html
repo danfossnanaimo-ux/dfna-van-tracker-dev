@@ -12,24 +12,9 @@
             background: #000;
             color: #fff;
             font-family: Arial, sans-serif;
+            overflow: hidden;
         }
 
-        /* Fullscreen scanner container */
-        #scanner {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Force html5-qrcode internal elements to fill the screen */
-        #scanner > * {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        /* Title text matching driver page */
         .title {
             position: absolute;
             top: 20px;
@@ -38,6 +23,22 @@
             font-size: 24px;
             font-weight: bold;
             z-index: 10;
+        }
+
+        #scanner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #scanner > * {
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
@@ -55,11 +56,11 @@ function showLocatingScreen(vanNumber) {
             justify-content:center;
             align-items:center;
             height:100vh;
-            font-size:32px;
-            text-align:center;
-            font-weight:bold;
             background:#000;
             color:#fff;
+            font-size:32px;
+            font-weight:bold;
+            text-align:center;
         ">
             Locating,<br>Van ${vanNumber}
         </div>
@@ -78,11 +79,9 @@ function startVanScanner() {
         { fps: 10, qrbox: 250 },
         (decodedText) => {
 
-            // Expected format: VAN|209
             const parts = decodedText.split("|");
             const vanNumber = parts[1];
 
-            // Update session
             let session = {};
             try { session = JSON.parse(localStorage.getItem("dfnaSession") || "{}"); } catch(e){}
             session.vanNumber = vanNumber;
@@ -91,10 +90,9 @@ function startVanScanner() {
             scanner.stop().then(() => {
                 setTimeout(() => {
                     showLocatingScreen(vanNumber);
-                }, 200); // Safari camera shutdown delay
+                }, 200);
             });
-        },
-        (err) => { /* ignore scan errors */ }
+        }
     );
 }
 
