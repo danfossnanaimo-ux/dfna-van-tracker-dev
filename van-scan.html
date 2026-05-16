@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Select Van</title>
+<title>Scan Van VIN</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -45,24 +45,23 @@
 
 <div id="container">
     <video id="preview" autoplay playsinline></video>
-    <p id="caption">Scan Van QR Code</p>
+    <p id="caption">Scan Van VIN</p>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
 
 <script>
+    const LOOKUP_URL = "https://script.google.com/macros/s/AKfycbz8j8q7x9p0Q2xZx8Z2o2sdfsdflkjsdf/exec"; 
+    // ^ Replace with your actual Apps Script URL
+
     const video = document.getElementById("preview");
     let scanner;
 
-    // Your live Apps Script API
-    const LOOKUP_URL = "https://script.google.com/macros/s/AKfycbxW9NwuYgTyUBc2PFFn8dEx8ZemrPRKOnyhuuVmyMtGHtQhpA__J-97p0E_eSHnwJcn/exec";
-
     async function startScanner() {
         try {
-            scanner = new QrScanner(video, result => handleScan(result), {
+            scanner = new QrScanner(video, result => handleScan(result.data), {
                 preferredCamera: "environment"
             });
-
             await scanner.start();
         } catch (err) {
             fallbackToDefaultCamera();
@@ -71,10 +70,9 @@
 
     async function fallbackToDefaultCamera() {
         try {
-            scanner = new QrScanner(video, result => handleScan(result), {
+            scanner = new QrScanner(video, result => handleScan(result.data), {
                 preferredCamera: "auto"
             });
-
             await scanner.start();
         } catch (err) {
             console.error("Camera failed:", err);
@@ -85,53 +83,51 @@
         scanner.stop();
 
         vin = vin.trim();
+        console.log("Scanned VIN:", vin);
 
-        if (!vin) {
-            alert("Invalid VIN QR");
+        try {
+            const url = `${LOOKUP_URL}?vin=${encodeURIComponent(vin)}`;
+            console.log("Fetching:", url);
+
+            const response = await fetch(url);
+            const text = await response.text();
+            console.log("Raw response:", text);
+
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (err) {
+                alert("Server returned invalid JSON:\n" + text);
+                startScanner();
+                return;
+            }
+
+            if (!data.vanNumber) {
+                alert("VIN not found in database:\n" + vin);
+                startScanner();
+                return;
+            }
+
+            const vanNumber = data.vanNumber;
+
+            const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
+
+            const session = {
+                user,
+                vin,
+                vanNumber,
+                numericVan: vanNumber
+            };
+
+            localStorage.setItem("dfnaSession", JSON.stringify(session));
+
+            window.location.href = "index.html";
+
+        } catch (err) {
+            alert("Error: " + err.message);
+            console.error(err);
             startScanner();
-            return;
         }
-
-        // Lookup van number from Google Sheet
-        const response = await fetch(`${LOOKUP_URL}?vin=${encodeURIComponent(vin)}`);
-        const data = await response.json();
-
-        if (data.error) {
-            alert("VIN not found in database");
-            startScanner();
-            return;
-        }
-
-        let vanNumber = data.vanNumber;
-
-        // Extract only digits (DFNA-12 → 12, or 209 → 209)
-        const digits = vanNumber.match(/\d+/g);
-        const numericVan = digits ? digits[digits.length - 1] : null;
-
-        if (!numericVan) {
-            alert("Van number format invalid");
-            startScanner();
-            return;
-        }
-
-        const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
-
-        if (!user.name) {
-            alert("User not logged in");
-            window.location.href = "login.html";
-            return;
-        }
-
-        const session = {
-            user,
-            vin,
-            vanNumber,
-            numericVan
-        };
-
-        localStorage.setItem("dfnaSession", JSON.stringify(session));
-
-        window.location.href = "index.html";
     }
 
     window.onload = startScanner;
