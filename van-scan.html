@@ -24,7 +24,11 @@ layout: none
 <div id="scanner"></div>
 
 <script>
+alert("VAN PAGE LOADED");  // <— 1) fires as soon as van-scan.html loads
+
 function showLocatingScreen(vanNumber) {
+    alert("SHOW LOCATING FOR VAN " + vanNumber);  // <— 3) confirms we reached the message
+
     document.body.innerHTML = `
         <div style="
             display:flex;
@@ -52,6 +56,8 @@ function startVanScanner() {
         { fps: 10, qrbox: 250 },
         (decodedText) => {
 
+            alert("SCAN CALLBACK FIRED: " + decodedText);  // <— 2) confirms scan success
+
             const parts = decodedText.split("|");
             const vanNumber = parts[1];
 
@@ -71,6 +77,7 @@ function startVanScanner() {
 
 startVanScanner();
 </script>
+
 
 </body>
 </html>
