@@ -40,6 +40,11 @@
 <div id="sessionInfo">Loading session…</div>
 <div id="map"></div>
 
+<script>
+console.log("INDEX.HTML LOADED — BEFORE APP.JS");
+document.getElementById("sessionInfo").innerText = "Index loaded — waiting for app.js";
+</script>
+    
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <!-- IMPORTANT: app.js must load LAST -->
