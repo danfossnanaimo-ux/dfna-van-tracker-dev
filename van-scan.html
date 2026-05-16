@@ -1,72 +1,40 @@
----
-layout: none
----
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Select Van</title>
-    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://unpkg.com/html5-qrcode?v=2"></script>
 
     <style>
-        /* RESET EVERYTHING */
-        html, body, div, span, applet, object, iframe,
-        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-        a, abbr, acronym, address, big, cite, code,
-        del, dfn, em, img, ins, kbd, q, s, samp,
-        small, strike, strong, sub, sup, tt, var,
-        b, u, i, center,
-        dl, dt, dd, ol, ul, li,
-        fieldset, form, label, legend,
-        table, caption, tbody, tfoot, thead, tr, th, td,
-        article, aside, canvas, details, embed,
-        figure, figcaption, footer, header, hgroup,
-        menu, nav, output, ruby, section, summary,
-        time, mark, audio, video {
+        body {
             margin: 0;
             padding: 0;
-            border: 0;
-            font-size: 100%;
-            font: inherit;
-            vertical-align: baseline;
-        }
-
-        body {
             background: #000;
             color: #fff;
             font-family: Arial, sans-serif;
-            overflow: hidden;
         }
 
         .title {
-            position: fixed;
+            position: absolute;
             top: 20px;
             width: 100%;
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            z-index: 9999;
+            z-index: 10;
         }
 
         #scanner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw !important;
-            height: 100vh !important;
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-            background: #000;
-            z-index: 1;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* FORCE html5-qrcode internals to fill screen */
         #scanner > * {
             width: 100% !important;
             height: 100% !important;
-            max-width: none !important;
-            max-height: none !important;
         }
     </style>
 </head>
@@ -84,11 +52,11 @@ function showLocatingScreen(vanNumber) {
             justify-content:center;
             align-items:center;
             height:100vh;
+            font-size:32px;
+            text-align:center;
+            font-weight:bold;
             background:#000;
             color:#fff;
-            font-size:32px;
-            font-weight:bold;
-            text-align:center;
         ">
             Locating,<br>Van ${vanNumber}
         </div>
