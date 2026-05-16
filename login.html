@@ -45,10 +45,9 @@
 
 <div id="container">
     <video id="preview" autoplay playsinline></video>
-    <p id="caption">Scan ID Card to Login</p>
+    <p id="caption">Scan Driver QR Code</p>
 </div>
 
-<!-- FIXED, STABLE QR-SCANNER VERSION -->
 <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
 
 <script>
@@ -56,18 +55,12 @@
     let scanner;
 
     async function startScanner() {
-        console.log("Starting scanner...");
-
         try {
             scanner = new QrScanner(video, result => handleScan(result.data), {
                 preferredCamera: "environment"
             });
-
             await scanner.start();
-            console.log("Camera started");
-
         } catch (err) {
-            console.warn("Environment camera failed, trying default...", err);
             fallbackToDefaultCamera();
         }
     }
@@ -77,35 +70,38 @@
             scanner = new QrScanner(video, result => handleScan(result.data), {
                 preferredCamera: "auto"
             });
-
             await scanner.start();
-            console.log("Fallback camera started");
-
         } catch (err) {
             console.error("Camera failed:", err);
         }
     }
 
-    function handleScan(text) {
-        alert("Scanned: [" + text + "]");
+    async function handleScan(text) {
         scanner.stop();
 
-        const parts = text.split("/");
+        // Debug (optional)
+        // alert("Scanned: [" + text + "]");
+
+        // Clean and parse
+        const cleaned = text.replace(/\s+/g, " ").trim();
+        const parts = cleaned.split("/").map(p => p.trim());
+
         if (parts.length < 3) {
-            alert("Invalid QR format");
+            alert("Invalid driver QR: " + cleaned);
             startScanner();
             return;
         }
 
         const user = {
-            name: parts[0].trim(),
-            division: parts[1].trim(),
-            employeeId: parts[2].trim()
+            name: parts[0],
+            division: parts[1],
+            employeeId: parts[2]
         };
 
         localStorage.setItem("dfnaUser", JSON.stringify(user));
 
-        window.location.href = "index.html";
+        // Redirect to van scanner (correct flow)
+        window.location.href = "scan-van.html";
     }
 
     window.onload = startScanner;
