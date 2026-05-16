@@ -48,24 +48,40 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------
     // LOAD VAN LOCATIONS
     // -------------------------------
-    fetch("/dfna-van-tracker-dev/data/locations.json")
-        .then(res => res.json())
+    fetch("/dfna-van-tracker-dev/data/locations.json?v=5")
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Failed to fetch JSON: " + res.status);
+            }
+            return res.json();
+        })
         .then(vans => {
             console.log("Loaded vans:", vans);
 
             vans.forEach(van => {
-                const vanNum = van.vanNumber.toString();
+
+                // Extract van number from "name": "209 DFNA"
+                const vanNum = van.name.split(" ")[0];
+
+                // Extract coordinates from nested gps object
+                const lat = van.gps.latitude;
+                const lng = van.gps.longitude;
+
+                if (!lat || !lng) {
+                    console.warn("Skipping van with missing coordinates:", van);
+                    return;
+                }
 
                 if (selectedVan && vanNum === selectedVan) {
                     console.log("Highlighting van:", vanNum);
 
-                    L.marker([van.lat, van.lng], { icon: highlightIcon })
+                    L.marker([lat, lng], { icon: highlightIcon })
                         .addTo(map)
                         .bindPopup(`Van ${vanNum}`);
 
-                    map.setView([van.lat, van.lng], 15);
+                    map.setView([lat, lng], 15);
                 } else {
-                    L.marker([van.lat, van.lng], { icon: normalIcon })
+                    L.marker([lat, lng], { icon: normalIcon })
                         .addTo(map)
                         .bindPopup(`Van ${vanNum}`);
                 }
