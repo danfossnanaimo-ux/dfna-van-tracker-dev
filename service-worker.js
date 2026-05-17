@@ -1,32 +1,16 @@
-self.addEventListener("install", event => {
-    event.waitUntil(
-        caches.open("dfna-cache-v3").then(cache => {
-            return cache.addAll([
-                "/dfna-van-tracker-dev/index.html",
-                "/dfna-van-tracker-dev/manifest.json",
-                "/dfna-van-tracker-dev/dfna_last_locations.js"
-            ]);
-        })
-    );
+self.addEventListener("install", () => {
+  self.skipWaiting();
 });
 
-self.addEventListener("fetch", event => {
-    const url = event.request.url;
+self.addEventListener("activate", () => {
+  caches.keys().then(keys => {
+    return Promise.all(keys.map(k => caches.delete(k)));
+  }).then(() => {
+    self.clients.claim();
+  });
+});
 
-    // Never cache scanner pages
-    if (
-        url.includes("scan-driver.html") ||
-        url.includes("scan-van.html") ||
-        url.includes("greeting.html") ||
-        url.includes("loading.html")
-    ) {
-        event.respondWith(fetch(event.request));
-        return;
-    }
-
-    event.respondWith(
-        caches.match(event.request).then(response => {
-            return response || fetch(event.request);
-        })
-    );
+// Do NOT cache anything
+self.addEventListener("fetch", (event) => {
+  event.respondWith(fetch(event.request));
 });
