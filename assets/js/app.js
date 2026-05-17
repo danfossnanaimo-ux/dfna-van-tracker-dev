@@ -92,23 +92,27 @@ document.addEventListener("DOMContentLoaded", () => {
             map.setView([selectedLat, selectedLng], 17);
 
             vans.forEach(v => {
-                const num = v.name.split(" ")[0];
-                const lat = v.gps.latitude;
-                const lng = v.gps.longitude;
+            const num = v.name.split(" ")[0];
+            const lat = v.gps.latitude;
+            const lng = v.gps.longitude;
 
-                if (!lat || !lng) return;
+            if (!lat || !lng) return;
 
-                const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
+            const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
 
-                if (num === selectedVan) {
-                    L.marker([lat, lng], { icon: vanIcon(num, 1.0, true) }).addTo(map);
-                    return;
-                }
+            if (num === selectedVan) {
+            L.marker([lat, lng], { icon: vanIcon(num, 1.0, true) }).addTo(map);
+            return;
+        }
 
-                if (dist <= 10) {
-                    L.marker([lat, lng], { icon: vanIcon(num, 0.3, false) }).addTo(map);
-                }
-            });
+        if (dist <= 10) {
+            L.marker([lat, lng], { icon: vanIcon(num, 0.3, false) }).addTo(map);
+        }
+    });
+
+        // ⭐⭐⭐ MAP IS NOW READY — SEND SIGNAL ⭐⭐⭐
+        window.parent.postMessage("MAP_READY", "*");
+
 
         });
 
