@@ -27,24 +27,7 @@
 <div id="msg"></div>
 
 <script>
-let van = localStorage.getItem("dfnaVan");
-
-if (!van) {
-    document.getElementById("msg").innerHTML = `
-        <div style="
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            width:100vw;
-            font-size:40px;
-            font-weight:700;
-        ">
-            No van selected
-        </div>
-    `;
-    throw new Error("Missing van number");
-}
+let vin = localStorage.getItem("dfnaVIN");
 
 document.getElementById("msg").innerHTML = `
     <div style="
@@ -56,7 +39,7 @@ document.getElementById("msg").innerHTML = `
         font-size:40px;
         font-weight:700;
     ">
-        Locating<br>Van ${van}…
+        Locating<br>VIN ${vin || "Unknown"}…
     </div>
 `;
 
@@ -69,45 +52,6 @@ iframe.style.border = "none";
 document.body.appendChild(iframe);
 
 window.addEventListener("message", (event) => {
-    if (event.data === "MAP_READY") {
-        document.body.innerHTML = "";
-        iframe.style.display = "block";
-    }
-});
-</script>
-
-<script>
-let van = localStorage.getItem("dfnaVan");
-
-alert("LOADING DEBUG:\ndfnaVan = " + van);
-
-console.log("LOADING DEBUG — dfnaVan =", van);
-
-if (!van) {
-    document.getElementById("msg").innerHTML = `
-        <div style="display:flex;justify-content:center;align-items:center;height:100vh;width:100vw;font-size:40px;font-weight:700;">
-            No van selected
-        </div>
-    `;
-    throw new Error("Missing van number");
-}
-
-document.getElementById("msg").innerHTML = `
-    <div style="display:flex;justify-content:center;align-items:center;height:100vh;width:100vw;font-size:40px;font-weight:700;">
-        Locating<br>Van ${van}…
-    </div>
-`;
-
-const iframe = document.createElement("iframe");
-iframe.src = "/dfna-van-tracker-dev/index.html";
-iframe.style.display = "none";
-iframe.style.width = "100vw";
-iframe.style.height = "100vh";
-iframe.style.border = "none";
-document.body.appendChild(iframe);
-
-window.addEventListener("message", (event) => {
-    console.log("LOADING DEBUG — message received:", event.data);
     if (event.data === "MAP_READY") {
         document.body.innerHTML = "";
         iframe.style.display = "block";
