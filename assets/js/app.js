@@ -1,17 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    let selectedVIN = localStorage.getItem("dfnaVIN");
+    // --- GET VIN FROM LOCAL STORAGE & SANITIZE ---
+    let selectedVIN = (localStorage.getItem("dfnaVIN") || "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .trim();
 
+    console.log("Selected VIN:", selectedVIN);
+
+    // --- SESSION INFO BAR ---
     const sessionBox = document.getElementById("sessionInfo");
     const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
     const userName = user.name || "??";
-
     sessionBox.innerText = "User: " + userName + " | VIN: " + (selectedVIN || "??");
 
+    // --- MAP INIT ---
     const map = L.map("map").setView([49.1659, -123.9401], 11);
-
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
 
+    // --- ICONS ---
     const vanIcon = function (label, opacity, isSelected) {
         return L.divIcon({
             html: `
@@ -52,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let userMarker = null;
 
+    // --- DISTANCE HELPER ---
     function distanceMeters(lat1, lon1, lat2, lon2) {
         const R = 6371000;
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -65,53 +73,77 @@ document.addEventListener("DOMContentLoaded", () => {
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    fetch("/dfna-van-tracker-dev/data/locations.json?v=20")
+    // --- VAN NUMBER EXTRACTOR ---
+    function extractVanNumber(name) {
+        const match = name.match(/\b\d+\b/);
+        return match ? match[0] : "Unknown";
+    }
+
+    // --- LOAD VAN LOCATIONS ---
+    fetch("/dfna-van-tracker-dev/data/locations.json?v=999")
         .then(res => res.json())
         .then(vans => {
 
+            console.log("Available VINs:");
+            vans.forEach(v => console.log(v.vin));
+
             let selectedLat = null;
             let selectedLng = null;
-            let selectedName = null;
+            let vanNumber = "Unknown";
 
+            // --- FIND MATCHING VIN ---
             vans.forEach(v => {
-                if (v.vin === selectedVIN) {
+                if (!v.vin) return;
+
+                const cleanVIN = v.vin.toUpperCase().trim();
+
+                if (cleanVIN === selectedVIN) {
                     selectedLat = v.gps.latitude;
                     selectedLng = v.gps.longitude;
-                    selectedName = v.name || "";
+                    vanNumber = extractVanNumber(v.name || "");
                 }
             });
 
-            if (!selectedLat || !selectedLng) return;
+            // --- IF NO MATCH, STOP (MAP_READY WILL NOT FIRE) ---
+            if (!selectedLat || !selectedLng) {
+                console.error("VIN not found in locations.json");
+                return;
+            }
 
+            // --- SEND MAP_READY TO loading.html ---
+            window.parent.postMessage({
+                type: "MAP_READY",
+                vanNumber: vanNumber
+            }, "*");
+
+            // --- CENTER MAP ON SELECTED VAN ---
             window.selectedVanLat = selectedLat;
             window.selectedVanLng = selectedLng;
-
             map.setView([selectedLat, selectedLng], 17);
 
+            // --- DRAW ALL VANS ---
             vans.forEach(v => {
                 const lat = v.gps.latitude;
                 const lng = v.gps.longitude;
-
                 if (!lat || !lng) return;
 
-                const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
+                const label = extractVanNumber(v.name || "");
+                const cleanVIN = v.vin.toUpperCase().trim();
 
-                if (v.vin === selectedVIN) {
-                    const label = (v.name || "").split(" ")[0] || "X";
+                if (cleanVIN === selectedVIN) {
                     L.marker([lat, lng], { icon: vanIcon(label, 1.0, true) }).addTo(map);
                     return;
                 }
 
+                const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
                 if (dist <= 10) {
-                    const label = (v.name || "").split(" ")[0] || "•";
                     L.marker([lat, lng], { icon: vanIcon(label, 0.3, false) }).addTo(map);
                 }
             });
 
-            window.parent.postMessage("MAP_READY", "*");
-
         });
 
+    // --- USER LOCATION TRACKING ---
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(pos => {
             const lat = pos.coords.latitude;
