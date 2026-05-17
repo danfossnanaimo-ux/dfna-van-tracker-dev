@@ -29,6 +29,7 @@ def geotab_call(method, params):
         "id": 1
     }
     response = requests.post(GEOTAB_SERVER, json=payload)
+    response.raise_for_status()
     return response.json()
 
 # ---------------------------------------------------------
@@ -192,9 +193,14 @@ def main():
     for d in devices:
         device_id = d["id"]
         name = d.get("name", "Unknown")
+        vin = d.get("vehicleIdentificationNumber") or d.get("vin")
 
-        # FILTER 1: Only DFNA vehicles
+        # Only DFNA vehicles
         if "DFNA" not in name.upper():
+            continue
+
+        # Require VIN for this map flow
+        if not vin:
             continue
 
         fueltax = get_fueltax_details(session_id, device_id)
@@ -202,12 +208,12 @@ def main():
         status = get_statusinfo(session_id, device_id)
 
         print(f"--- {name} ({device_id}) ---")
+        print("VIN:", vin)
         print("FuelTaxDetail:", fueltax)
         print("LogRecord:", logrec)
         print("DeviceStatusInfo:", status)
         print()
 
-        # Build list of candidate timestamps with source tags
         candidates = []
 
         if fueltax and fueltax.get("exitTime") and fueltax.get("exitLat") and fueltax.get("exitLon"):
@@ -220,7 +226,6 @@ def main():
         if not candidates:
             continue
 
-        # Parse timestamps and keep mapping to source
         parsed = []
         for source, ts, payload in candidates:
             try:
@@ -232,14 +237,11 @@ def main():
         if not parsed:
             continue
 
-        # Pick freshest source
         newest_dt, newest_source, newest_payload = max(parsed, key=lambda x: x[0])
 
-        # FILTER 2: Only vehicles active in last 30 days (based on freshest source)
         if newest_dt < THIRTY_DAYS_AGO:
             continue
 
-        # Build gps from the same freshest source
         if newest_source == "fueltax":
             gps = {
                 "latitude": newest_payload["exitLat"],
@@ -252,7 +254,7 @@ def main():
                 "longitude": newest_payload["lon"],
                 "dateTime": newest_payload["dateTime"]
             }
-        else:  # "status"
+        else:
             gps = {
                 "latitude": newest_payload["lat"],
                 "longitude": newest_payload["lon"],
@@ -262,6 +264,7 @@ def main():
         fleet_output.append({
             "id": device_id,
             "name": name,
+            "vin": vin,
             "gps": gps
         })
 
