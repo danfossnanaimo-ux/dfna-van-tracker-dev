@@ -1,6 +1,6 @@
 self.addEventListener("install", event => {
     event.waitUntil(
-        caches.open("dfna-cache-v2").then(cache => {
+        caches.open("dfna-cache-v3").then(cache => {
             return cache.addAll([
                 "/dfna-van-tracker-dev/index.html",
                 "/dfna-van-tracker-dev/manifest.json",
