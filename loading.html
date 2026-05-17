@@ -1,30 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Loading Van</title>
+<meta charset="UTF-8">
+<title>Loading Van</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: system-ui, sans-serif;
+        color: white;
+        font-size: 40px;
+        font-weight: 700;
+        text-align: center;
+    }
+</style>
 </head>
-<body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center; height:100vh; font-size:32px; font-weight:bold;">
+
+<body>
 
 <div id="msg">Loading…</div>
 
 <script>
-const van = localStorage.getItem("dfnaVan") || "Unknown";
-document.getElementById("msg").innerHTML = `Locating,<br>Van ${van}`;
+let van = localStorage.getItem("dfnaVan");
 
-// Load map in background
+if (!van) {
+    document.getElementById("msg").innerHTML = "No van selected";
+    throw new Error("Missing van number");
+}
+
+document.getElementById("msg").innerHTML = `Locating<br>Van ${van}…`;
+
 const iframe = document.createElement("iframe");
-iframe.src = "index.html";
+iframe.src = "/dfna-van-tracker-dev/index.html";
 iframe.style.display = "none";
+iframe.style.width = "100vw";
+iframe.style.height = "100vh";
+iframe.style.border = "none";
 document.body.appendChild(iframe);
 
-// When map finishes loading, replace loading screen
-iframe.onload = () => {
-    document.body.innerHTML = "";
-    iframe.style.display = "block";
-    iframe.style.width = "100vw";
-    iframe.style.height = "100vh";
-};
+window.addEventListener("message", (event) => {
+    if (event.data === "MAP_READY") {
+        document.body.innerHTML = "";
+        iframe.style.display = "block";
+    }
+});
 </script>
 
 </body>
