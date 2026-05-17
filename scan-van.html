@@ -1,11 +1,8 @@
----
-layout: none
----
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Select Van</title>
+    <title>Scan Van</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
 
     <style>
@@ -24,28 +21,10 @@ layout: none
 <div id="scanner"></div>
 
 <script>
-alert("VAN PAGE LOADED");  // <— 1) fires as soon as van-scan.html loads
+function showLoading(vanNumber) {
+    localStorage.setItem("dfnaVan", vanNumber);
 
-function showLocatingScreen(vanNumber) {
-    alert("SHOW LOCATING FOR VAN " + vanNumber);  // <— 3) confirms we reached the message
-
-    document.body.innerHTML = `
-        <div style="
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            font-size:32px;
-            text-align:center;
-            font-weight:bold;
-        ">
-            Locating,<br>Van ${vanNumber}
-        </div>
-    `;
-
-    setTimeout(() => {
-        window.location.href = "index.html";
-    }, 2000);
+    window.location.href = "loading.html";
 }
 
 function startVanScanner() {
@@ -54,22 +33,12 @@ function startVanScanner() {
     scanner.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
-        (decodedText) => {
-
-            alert("SCAN CALLBACK FIRED: " + decodedText);  // <— 2) confirms scan success
-
+        decodedText => {
             const parts = decodedText.split("|");
             const vanNumber = parts[1];
 
-            let session = {};
-            try { session = JSON.parse(localStorage.getItem("dfnaSession") || "{}"); } catch(e){}
-            session.vanNumber = vanNumber;
-            localStorage.setItem("dfnaSession", JSON.stringify(session));
-
             scanner.stop().then(() => {
-                setTimeout(() => {
-                    showLocatingScreen(vanNumber);
-                }, 200);
+                setTimeout(() => showLoading(vanNumber), 200);
             });
         }
     );
@@ -77,7 +46,6 @@ function startVanScanner() {
 
 startVanScanner();
 </script>
-
 
 </body>
 </html>
