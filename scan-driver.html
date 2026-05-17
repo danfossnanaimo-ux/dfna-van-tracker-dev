@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Driver Login</title>
+    <title>Scan Driver</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
 
     <style>
@@ -21,33 +21,26 @@
 <div id="scanner"></div>
 
 <script>
-function startDriverScanner() {
-    const scanner = new Html5Qrcode("scanner");
+function handleDriverScan(text) {
+    scanner.stop();
 
-    scanner.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        (decodedText) => {
+    const cleaned = text.replace(/\s+/g, " ").trim();
+    const parts = cleaned.split("|");
 
-            const parts = decodedText.split("|");
-            const fullName = parts[1] || "";
+    const fullName = parts[1] || "";
+    localStorage.setItem("dfnaSession", JSON.stringify({
+        user: { name: fullName }
+    }));
 
-            // Save session
-            localStorage.setItem("dfnaSession", JSON.stringify({
-                user: { name: fullName }
-            }));
-
-            scanner.stop().then(() => {
-                // SAFARI FIX
-                setTimeout(() => {
-                    window.location.href = "/dfna-van-tracker-dev/greeting.html";
-                }, 200);
-            });
-        }
-    );
+    window.location.href = "/dfna-van-tracker-dev/greeting.html";
 }
 
-startDriverScanner();
+const scanner = new Html5Qrcode("scanner");
+scanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    handleDriverScan
+);
 </script>
 
 </body>
