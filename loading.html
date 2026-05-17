@@ -72,10 +72,11 @@ window.addEventListener("message", (event) => {
         `;
 
         // After a short delay, reveal the map
-        setTimeout(() => {
-            document.body.innerHTML = "";
-            iframe.style.display = "block";
-        }, 600);
+setTimeout(() => {
+    document.getElementById("msg").remove();   // remove loading message ONLY
+    iframe.style.display = "block";            // show the map iframe
+}, 600);
+
     }
 });
 </script>
