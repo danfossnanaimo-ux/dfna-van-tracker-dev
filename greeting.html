@@ -1,16 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Welcome</title>
+<meta charset="UTF-8">
+<title>Welcome</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: system-ui, sans-serif;
+        color: white;
+        font-size: 60px;
+        font-weight: 700;
+        text-align: center;
+    }
+</style>
 </head>
-<body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center; height:100vh; font-size:32px; font-weight:bold;">
+
+<body>
 
 <script>
-const session = JSON.parse(localStorage.getItem("dfnaSession") || "{}");
-const name = session?.user?.name?.split(" ")[0] || "Driver";
+const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
+const first = user.name?.split(" ")[0] || "Driver";
 
-document.body.innerHTML = `Hello,<br>${name}`;
+document.body.innerHTML = `Hello<br>${first}`;
 
 setTimeout(() => {
     window.location.href = "/dfna-van-tracker-dev/scan-van.html";
