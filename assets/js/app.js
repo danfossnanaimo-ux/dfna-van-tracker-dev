@@ -1,23 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // ⭐ DEBUG: Read van number
+    // Read van number
     let selectedVan = localStorage.getItem("dfnaVan");
-    alert("APP.JS DEBUG:\nselectedVan = " + selectedVan);
-    console.log("APP.JS DEBUG — selectedVan =", selectedVan);
 
-    // ⭐ Load user
+    // Minimal debugging
+    console.log("APP.JS DEBUG — selectedVan =", selectedVan);
+    if (!selectedVan || selectedVan === "Unknown") {
+        alert("APP.JS DEBUG:\nselectedVan = " + selectedVan);
+    }
+
+    // Load user
     const sessionBox = document.getElementById("sessionInfo");
     const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
     const userName = user.name || "??";
 
     sessionBox.innerText = "User: " + userName + " | Van: " + (selectedVan || "??");
 
-    // ⭐ Initialize map
+    // Initialize map
     const map = L.map("map").setView([49.1659, -123.9401], 11);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
 
-    // ⭐ Marker icons
     const vanIcon = function (number, opacity, isSelected) {
         return L.divIcon({
             html: `
@@ -71,40 +74,28 @@ document.addEventListener("DOMContentLoaded", () => {
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    // ⭐ Fetch van locations
     fetch("/dfna-van-tracker-dev/data/locations.json?v=11")
         .then(res => res.json())
         .then(vans => {
 
-            console.log("APP.JS DEBUG — Vans loaded:", vans);
-            console.log("APP.JS DEBUG — Looking for van:", selectedVan);
-
             let selectedLat = null;
             let selectedLng = null;
 
-            // ⭐ Find selected van in JSON
             vans.forEach(v => {
-                const num = v.name.split(" ")[0]; // "209 Van" → "209"
+                const num = v.name.split(" ")[0];
                 if (num === selectedVan) {
                     selectedLat = v.gps.latitude;
                     selectedLng = v.gps.longitude;
                 }
             });
 
-            console.log("APP.JS DEBUG — Selected van coords:", selectedLat, selectedLng);
-
-            if (!selectedLat || !selectedLng) {
-                alert("APP.JS DEBUG ERROR:\nCould not find van " + selectedVan + " in locations.json");
-                console.error("APP.JS DEBUG — Van not found in JSON");
-                return;
-            }
+            if (!selectedLat || !selectedLng) return;
 
             window.selectedVanLat = selectedLat;
             window.selectedVanLng = selectedLng;
 
             map.setView([selectedLat, selectedLng], 17);
 
-            // ⭐ Plot markers
             vans.forEach(v => {
                 const num = v.name.split(" ")[0];
                 const lat = v.gps.latitude;
@@ -124,13 +115,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // ⭐⭐⭐ MAP IS NOW READY ⭐⭐⭐
-            console.log("APP.JS DEBUG — Sending MAP_READY");
+            // MAP READY
             window.parent.postMessage("MAP_READY", "*");
 
         });
 
-    // ⭐ Track user location
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(pos => {
             const lat = pos.coords.latitude;
