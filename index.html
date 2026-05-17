@@ -1,70 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
     <title>DFNA Van Tracker</title>
 
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
-        body, html {
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            height: 100%;
-            width: 100%;
             overflow: hidden;
-            font-family: Arial, sans-serif;
         }
 
         #sessionInfo {
-            width: 100%;
-            padding: 10px;
+            height: 50px;
+            line-height: 50px;
             background: #222;
             color: #fff;
-            font-size: 16px;
             text-align: center;
+            font-size: 16px;
+            position: absolute;
+            top: 0;
+            width: 100%;
             z-index: 9999;
         }
 
         #map {
+            position: absolute;
+            top: 50px;   /* below the session bar */
+            bottom: 0;
+            left: 0;
+            right: 0;
             width: 100%;
             height: calc(100% - 50px);
-        }
-
-        .user-pulse {
-            position: relative;
-            width: 40px;
-            height: 40px;
-        }
-
-        .user-pulse .inner-dot {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background: #00ff00;
-            border-radius: 50%;
-            box-shadow: 0 0 6px rgba(0,255,0,0.8);
-        }
-
-        .user-pulse .pulse-ring {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background: rgba(0,255,0,0.3);
-            animation: pulse 2s infinite ease-out;
-        }
-
-        @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+            background: #000;
         }
     </style>
 </head>
@@ -74,8 +46,20 @@
     <div id="sessionInfo">Loading session…</div>
     <div id="map"></div>
 
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Your app logic -->
     <script src="assets/js/app.js?v=11"></script>
+
+    <script>
+        // Force Leaflet to recalc size once iframe becomes visible
+        setTimeout(() => {
+            if (window.map && window.map.invalidateSize) {
+                window.map.invalidateSize();
+            }
+        }, 400);
+    </script>
 
 </body>
 </html>
