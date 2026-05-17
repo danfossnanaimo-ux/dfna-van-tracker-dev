@@ -65,17 +65,19 @@ document.addEventListener("DOMContentLoaded", () => {
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    fetch("/dfna-van-tracker-dev/data/locations.json?v=12")
+    fetch("/dfna-van-tracker-dev/data/locations.json?v=20")
         .then(res => res.json())
         .then(vans => {
 
             let selectedLat = null;
             let selectedLng = null;
+            let selectedName = null;
 
             vans.forEach(v => {
                 if (v.vin === selectedVIN) {
                     selectedLat = v.gps.latitude;
                     selectedLng = v.gps.longitude;
+                    selectedName = v.name || "";
                 }
             });
 
@@ -95,12 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
 
                 if (v.vin === selectedVIN) {
-                    L.marker([lat, lng], { icon: vanIcon("X", 1.0, true) }).addTo(map);
+                    const label = (v.name || "").split(" ")[0] || "X";
+                    L.marker([lat, lng], { icon: vanIcon(label, 1.0, true) }).addTo(map);
                     return;
                 }
 
                 if (dist <= 10) {
-                    L.marker([lat, lng], { icon: vanIcon("•", 0.3, false) }).addTo(map);
+                    const label = (v.name || "").split(" ")[0] || "•";
+                    L.marker([lat, lng], { icon: vanIcon(label, 0.3, false) }).addTo(map);
                 }
             });
 
