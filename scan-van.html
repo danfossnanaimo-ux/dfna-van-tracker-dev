@@ -75,14 +75,19 @@
     }
 
     async function handleScan(text) {
-        scanner.stop();
+    scanner.stop();
 
-        const vin = text.replace(/\s+/g, "").trim();
+    // Clean aggressively
+    const vin = text
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")   // remove anything not VIN-safe
+        .trim();
 
-        localStorage.setItem("dfnaVIN", vin);
+    localStorage.setItem("dfnaVIN", vin);
 
-        window.location.href = "/dfna-van-tracker-dev/loading.html";
-    }
+    window.location.href = "/dfna-van-tracker-dev/loading.html";
+}
+
 
     window.onload = startScanner;
 </script>
