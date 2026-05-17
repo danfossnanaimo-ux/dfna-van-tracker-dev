@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Select Van</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
-
     <style>
         body {
             margin: 0;
@@ -12,36 +11,25 @@
             background: #000;
             color: #fff;
             font-family: Arial, sans-serif;
-        }
-
-        /* Fullscreen scanner container */
-        #scanner {
-            width: 100vw;
-            height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
         }
 
-        /* Force html5-qrcode internal elements to fill the screen */
-        #scanner > * {
-            width: 100% !important;
-            height: 100% !important;
+        .title {
+            margin: 16px 0;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
         }
 
-        /* Title text */
-        .title {
-            position: absolute;
-            top: 20px;
+        #scanner {
             width: 100%;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 10;
+            max-width: 480px;
+            margin: 0 auto 16px auto;
         }
     </style>
 </head>
-
 <body>
 
 <div class="title">Scan Van QR Code</div>
@@ -51,7 +39,7 @@
 function cleanVIN(raw) {
     return raw
         .toUpperCase()
-        .replace(/[^A-Z0-9]/g, "")   // remove EVERYTHING except VIN-safe chars
+        .replace(/[^A-Z0-9]/g, "")
         .trim();
 }
 
@@ -61,10 +49,8 @@ function handleScan(decodedText) {
     console.log("RAW SCAN:", decodedText);
     console.log("CLEAN VIN:", vin);
 
-    // Save cleaned VIN
     localStorage.setItem("dfnaVIN", vin);
 
-    // Stop scanner before redirect
     scanner.stop().then(() => {
         setTimeout(() => {
             window.location.href = "loading.html";
@@ -72,18 +58,24 @@ function handleScan(decodedText) {
     });
 }
 
+let scanner = null;
+
 function startScanner() {
     scanner = new Html5Qrcode("scanner");
 
     scanner.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
+        {
+            fps: 10,
+            qrbox: { width: 280, height: 280 }  // good-sized scan area
+        },
         (decodedText) => handleScan(decodedText),
-        (err) => { /* ignore scan errors */ }
+        (errorMessage) => {
+            // ignore scan errors
+        }
     );
 }
 
-let scanner = null;
 startScanner();
 </script>
 
