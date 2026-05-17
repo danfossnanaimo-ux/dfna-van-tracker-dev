@@ -1,95 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Scan Van</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Select Van</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: system-ui, sans-serif;
-        color: white;
-    }
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
 
-    #container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+        /* Fullscreen scanner container */
+        #scanner {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    #preview {
-        width: 320px;
-        height: 320px;
-        background: #111;
-        border-radius: 16px;
-        object-fit: cover;
-    }
+        /* Force html5-qrcode internal elements to fill the screen */
+        #scanner > * {
+            width: 100% !important;
+            height: 100% !important;
+        }
 
-    #caption {
-        margin-top: 18px;
-        font-size: 22px;
-        font-weight: 500;
-        text-align: center;
-    }
-</style>
+        /* Title text */
+        .title {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 10;
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="container">
-    <video id="preview" autoplay playsinline></video>
-    <p id="caption">Scan Van QR Code</p>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+<div class="title">Scan Van QR Code</div>
+<div id="scanner"></div>
 
 <script>
-    const video = document.getElementById("preview");
-    let scanner;
-
-    async function startScanner() {
-        try {
-            scanner = new QrScanner(video, result => handleScan(result.data), {
-                preferredCamera: "environment"
-            });
-            await scanner.start();
-        } catch (err) {
-            fallbackToDefaultCamera();
-        }
-    }
-
-    async function fallbackToDefaultCamera() {
-        try {
-            scanner = new QrScanner(video, result => handleScan(result.data), {
-                preferredCamera: "auto"
-            });
-            await scanner.start();
-        } catch (err) {}
-    }
-
-    async function handleScan(text) {
-    scanner.stop();
-
-    // Clean aggressively
-    const vin = text
+function cleanVIN(raw) {
+    return raw
         .toUpperCase()
-        .replace(/[^A-Z0-9]/g, "")   // remove anything not VIN-safe
+        .replace(/[^A-Z0-9]/g, "")   // remove EVERYTHING except VIN-safe chars
         .trim();
-
-    localStorage.setItem("dfnaVIN", vin);
-
-    window.location.href = "/dfna-van-tracker-dev/loading.html";
 }
 
+function handleScan(decodedText) {
+    const vin = cleanVIN(decodedText);
 
-    window.onload = startScanner;
+    console.log("RAW SCAN:", decodedText);
+    console.log("CLEAN VIN:", vin);
+
+    // Save cleaned VIN
+    localStorage.setItem("dfnaVIN", vin);
+
+    // Stop scanner before redirect
+    scanner.stop().then(() => {
+        setTimeout(() => {
+            window.location.href = "loading.html";
+        }, 200);
+    });
+}
+
+function startScanner() {
+    scanner = new Html5Qrcode("scanner");
+
+    scanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (decodedText) => handleScan(decodedText),
+        (err) => { /* ignore scan errors */ }
+    );
+}
+
+let scanner = null;
+startScanner();
 </script>
 
 </body>
