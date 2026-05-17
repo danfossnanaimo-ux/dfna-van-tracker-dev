@@ -10,14 +10,13 @@
         margin: 0;
         padding: 0;
         height: 100vh;
+        width: 100vw;
         background: #000;
         display: flex;
         justify-content: center;
         align-items: center;
         font-family: system-ui, sans-serif;
         color: white;
-        font-size: 40px;
-        font-weight: 700;
         text-align: center;
     }
 </style>
@@ -25,17 +24,41 @@
 
 <body>
 
-<div id="msg">Loading…</div>
+<div id="msg"></div>
 
 <script>
 let van = localStorage.getItem("dfnaVan");
 
 if (!van) {
-    document.getElementById("msg").innerHTML = "No van selected";
+    document.getElementById("msg").innerHTML = `
+        <div style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            width:100vw;
+            font-size:40px;
+            font-weight:700;
+        ">
+            No van selected
+        </div>
+    `;
     throw new Error("Missing van number");
 }
 
-document.getElementById("msg").innerHTML = `Locating<br>Van ${van}…`;
+document.getElementById("msg").innerHTML = `
+    <div style="
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+        width:100vw;
+        font-size:40px;
+        font-weight:700;
+    ">
+        Locating<br>Van ${van}…
+    </div>
+`;
 
 const iframe = document.createElement("iframe");
 iframe.src = "/dfna-van-tracker-dev/index.html";
