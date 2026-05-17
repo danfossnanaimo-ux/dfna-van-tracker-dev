@@ -32,7 +32,6 @@
             height: calc(100% - 50px);
         }
 
-        /* USER MARKER — SMALL PULSING GREEN DOT */
         .user-pulse {
             position: relative;
             width: 40px;
@@ -64,14 +63,8 @@
         }
 
         @keyframes pulse {
-            0% {
-                transform: translate(-50%, -50%) scale(0.6);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1.6);
-                opacity: 0;
-            }
+            0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
         }
     </style>
 </head>
@@ -82,7 +75,7 @@
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="assets/js/app.js?v=10"></script>
+    <script src="assets/js/app.js?v=11"></script>
 
 </body>
 </html>
