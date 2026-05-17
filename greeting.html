@@ -1,1 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+</head>
+<body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center; height:100vh; font-size:32px; font-weight:bold;">
 
+<script>
+const session = JSON.parse(localStorage.getItem("dfnaSession") || "{}");
+const name = session?.user?.name?.split(" ")[0] || "Driver";
+
+document.body.innerHTML = `Hello,<br>${name}`;
+
+setTimeout(() => {
+    window.location.href = "scan-van.html";
+}, 2000);
+</script>
+
+</body>
+</html>
