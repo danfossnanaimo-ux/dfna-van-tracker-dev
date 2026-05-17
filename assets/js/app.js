@@ -1,27 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Read van number
-    let selectedVan = localStorage.getItem("dfnaVan");
+    let selectedVIN = localStorage.getItem("dfnaVIN");
 
-    // Minimal debugging
-    console.log("APP.JS DEBUG — selectedVan =", selectedVan);
-    if (!selectedVan || selectedVan === "Unknown") {
-        alert("APP.JS DEBUG:\nselectedVan = " + selectedVan);
-    }
-
-    // Load user
     const sessionBox = document.getElementById("sessionInfo");
     const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
     const userName = user.name || "??";
 
-    sessionBox.innerText = "User: " + userName + " | Van: " + (selectedVan || "??");
+    sessionBox.innerText = "User: " + userName + " | VIN: " + (selectedVIN || "??");
 
-    // Initialize map
     const map = L.map("map").setView([49.1659, -123.9401], 11);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
 
-    const vanIcon = function (number, opacity, isSelected) {
+    const vanIcon = function (label, opacity, isSelected) {
         return L.divIcon({
             html: `
                 <div style="
@@ -35,11 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     justify-content: center;
                     color: white;
                     font-weight: bold;
-                    font-size: 14px;
+                    font-size: 12px;
                     border: 2px solid white;
                     box-shadow: 0 0 6px rgba(0,0,0,0.4);
                 ">
-                    ${number}
+                    ${label}
                 </div>
             `,
             className: "",
@@ -74,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    fetch("/dfna-van-tracker-dev/data/locations.json?v=11")
+    fetch("/dfna-van-tracker-dev/data/locations.json?v=12")
         .then(res => res.json())
         .then(vans => {
 
@@ -82,8 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let selectedLng = null;
 
             vans.forEach(v => {
-                const num = v.name.split(" ")[0];
-                if (num === selectedVan) {
+                if (v.vin === selectedVIN) {
                     selectedLat = v.gps.latitude;
                     selectedLng = v.gps.longitude;
                 }
@@ -97,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
             map.setView([selectedLat, selectedLng], 17);
 
             vans.forEach(v => {
-                const num = v.name.split(" ")[0];
                 const lat = v.gps.latitude;
                 const lng = v.gps.longitude;
 
@@ -105,17 +94,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
 
-                if (num === selectedVan) {
-                    L.marker([lat, lng], { icon: vanIcon(num, 1.0, true) }).addTo(map);
+                if (v.vin === selectedVIN) {
+                    L.marker([lat, lng], { icon: vanIcon("X", 1.0, true) }).addTo(map);
                     return;
                 }
 
                 if (dist <= 10) {
-                    L.marker([lat, lng], { icon: vanIcon(num, 0.3, false) }).addTo(map);
+                    L.marker([lat, lng], { icon: vanIcon("•", 0.3, false) }).addTo(map);
                 }
             });
 
-            // MAP READY
             window.parent.postMessage("MAP_READY", "*");
 
         });
