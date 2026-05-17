@@ -29,15 +29,57 @@
         }
 
         #map {
-    position: absolute;
-    top: 50px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: calc(100% - 50px);
-    background: red !important;
-}
+        position: absolute;
+        top: 50px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: calc(100% - 50px);
+        background: #000;
+        }
+
+        .user-pulse {
+        position: relative;
+        width: 24px;
+        height: 24px;
+        }
+
+        .inner-dot {
+        width: 14px;
+        height: 14px;
+        background: #00ff55;
+        border-radius: 50%;
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        z-index: 2;
+        }
+
+        .pulse-ring {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        border: 3px solid #00ff55;
+        border-radius: 50%;
+        animation: pulse 1.6s infinite;
+        opacity: 0.7;
+        z-index: 1;
+        }
+
+    @keyframes pulse {
+    0% {
+        transform: scale(0.6);
+        opacity: 0.8;
+    }
+    70% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+    }
 
     </style>
 </head>
