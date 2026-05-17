@@ -1,15 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    let session = {};
-    try {
-        session = JSON.parse(localStorage.getItem("dfnaSession") || "{}");
-    } catch (e) { session = {}; }
-
-    let selectedVan = null;
-    if (session && session.vanNumber) selectedVan = String(session.vanNumber);
+    // ✔ FIXED: read van number from dfnaVan
+    let selectedVan = localStorage.getItem("dfnaVan");
 
     const sessionBox = document.getElementById("sessionInfo");
-    const userName = (session && session.user && session.user.name) ? session.user.name : "??";
+    const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
+    const userName = user.name || "??";
+
     sessionBox.innerText = "User: " + userName + " | Van: " + (selectedVan || "??");
 
     const map = L.map("map").setView([49.1659, -123.9401], 11);
@@ -69,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    fetch("/dfna-van-tracker-dev/data/locations.json?v=10")
+    fetch("/dfna-van-tracker-dev/data/locations.json?v=11")
         .then(res => res.json())
         .then(vans => {
 
@@ -92,27 +89,26 @@ document.addEventListener("DOMContentLoaded", () => {
             map.setView([selectedLat, selectedLng], 17);
 
             vans.forEach(v => {
-            const num = v.name.split(" ")[0];
-            const lat = v.gps.latitude;
-            const lng = v.gps.longitude;
+                const num = v.name.split(" ")[0];
+                const lat = v.gps.latitude;
+                const lng = v.gps.longitude;
 
-            if (!lat || !lng) return;
+                if (!lat || !lng) return;
 
-            const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
+                const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
 
-            if (num === selectedVan) {
-            L.marker([lat, lng], { icon: vanIcon(num, 1.0, true) }).addTo(map);
-            return;
-        }
+                if (num === selectedVan) {
+                    L.marker([lat, lng], { icon: vanIcon(num, 1.0, true) }).addTo(map);
+                    return;
+                }
 
-        if (dist <= 10) {
-            L.marker([lat, lng], { icon: vanIcon(num, 0.3, false) }).addTo(map);
-        }
-    });
+                if (dist <= 10) {
+                    L.marker([lat, lng], { icon: vanIcon(num, 0.3, false) }).addTo(map);
+                }
+            });
 
-        // ⭐⭐⭐ MAP IS NOW READY — SEND SIGNAL ⭐⭐⭐
-        window.parent.postMessage("MAP_READY", "*");
-
+            // ⭐⭐⭐ MAP IS NOW READY ⭐⭐⭐
+            window.parent.postMessage("MAP_READY", "*");
 
         });
 
