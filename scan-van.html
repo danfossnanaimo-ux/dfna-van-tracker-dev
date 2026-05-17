@@ -84,31 +84,18 @@
 
         const vanNumber = parts[1] || "Unknown";
 
+        // Save van number
         localStorage.setItem("dfnaVan", vanNumber);
+
+        // Debug ONLY if Unknown
+        if (!vanNumber || vanNumber === "Unknown") {
+            alert("SCAN-VAN DEBUG:\nRaw: " + text + "\nCleaned: " + cleaned + "\nVan: " + vanNumber);
+        }
 
         window.location.href = "/dfna-van-tracker-dev/loading.html";
     }
 
     window.onload = startScanner;
-</script>
-
-<script>
-    async function handleScan(text) {
-        scanner.stop();
-
-        const cleaned = text.replace(/\s+/g, " ").trim();
-        const parts = cleaned.split("|").map(p => p.trim());
-
-        const vanNumber = parts[1] || "Unknown";
-
-        alert("SCAN-VAN DEBUG:\nRaw: " + text + "\nCleaned: " + cleaned + "\nVan: " + vanNumber);
-
-        console.log("SCAN-VAN DEBUG — Saving dfnaVan =", vanNumber);
-
-        localStorage.setItem("dfnaVan", vanNumber);
-
-        window.location.href = "/dfna-van-tracker-dev/loading.html";
-    }
 </script>
 
 </body>
