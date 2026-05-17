@@ -15,8 +15,19 @@ document.addEventListener("DOMContentLoaded", () => {
     sessionBox.innerText = "User: " + userName + " | VIN: " + (selectedVIN || "??");
 
     // --- MAP INIT ---
-    const map = L.map("map").setView([49.1659, -123.9401], 11);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
+    window.map = L.map("map", {
+        zoomControl: true,
+        attributionControl: false
+    }).setView([49.1659, -123.9401], 11);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19
+    }).addTo(window.map);
+
+    // Force Leaflet to size correctly inside iframe
+    setTimeout(() => {
+        window.map.invalidateSize();
+    }, 400);
 
     // --- ICONS ---
     const vanIcon = function (label, opacity, isSelected) {
@@ -80,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- LOAD VAN LOCATIONS ---
-    fetch("/dfna-van-tracker-dev/data/locations.json?v=999")
+    fetch("data/locations.json?v=999")
         .then(res => res.json())
         .then(vans => {
 
@@ -95,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
             vans.forEach(v => {
                 if (!v.vin) return;
 
-                const cleanVIN = v.vin.toUpperCase().trim();
+                const cleanVIN = v.vin.toUpperCase().replace(/[^A-Z0-9]/g, "").trim();
 
                 if (cleanVIN === selectedVIN) {
                     selectedLat = v.gps.latitude;
@@ -104,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // --- IF NO MATCH, STOP (MAP_READY WILL NOT FIRE) ---
+            // --- IF NO MATCH, STOP ---
             if (!selectedLat || !selectedLng) {
                 console.error("VIN not found in locations.json");
                 return;
@@ -119,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // --- CENTER MAP ON SELECTED VAN ---
             window.selectedVanLat = selectedLat;
             window.selectedVanLng = selectedLng;
-            map.setView([selectedLat, selectedLng], 17);
+            window.map.setView([selectedLat, selectedLng], 17);
 
             // --- DRAW ALL VANS ---
             vans.forEach(v => {
@@ -128,16 +139,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!lat || !lng) return;
 
                 const label = extractVanNumber(v.name || "");
-                const cleanVIN = v.vin.toUpperCase().trim();
+                const cleanVIN = v.vin.toUpperCase().replace(/[^A-Z0-9]/g, "").trim();
 
                 if (cleanVIN === selectedVIN) {
-                    L.marker([lat, lng], { icon: vanIcon(label, 1.0, true) }).addTo(map);
+                    L.marker([lat, lng], { icon: vanIcon(label, 1.0, true) }).addTo(window.map);
                     return;
                 }
 
                 const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
                 if (dist <= 10) {
-                    L.marker([lat, lng], { icon: vanIcon(label, 0.3, false) }).addTo(map);
+                    L.marker([lat, lng], { icon: vanIcon(label, 0.3, false) }).addTo(window.map);
                 }
             });
 
@@ -150,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const lng = pos.coords.longitude;
 
             if (!userMarker) {
-                userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
+                userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(window.map);
             } else {
                 userMarker.setLatLng([lat, lng]);
             }
@@ -160,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     [lat, lng],
                     [window.selectedVanLat, window.selectedVanLng]
                 ]);
-                map.fitBounds(bounds, { padding: [80, 80] });
+                window.map.fitBounds(bounds, { padding: [80, 80] });
             }
 
         });
