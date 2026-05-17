@@ -1,1 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Loading Van</title>
+</head>
+<body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center; height:100vh; font-size:32px; font-weight:bold;">
 
+<div id="msg">Loading…</div>
+
+<script>
+const van = localStorage.getItem("dfnaVan") || "Unknown";
+document.getElementById("msg").innerHTML = `Locating,<br>Van ${van}`;
+
+// Load map in background
+const iframe = document.createElement("iframe");
+iframe.src = "index.html";
+iframe.style.display = "none";
+document.body.appendChild(iframe);
+
+// When map finishes loading, replace loading screen
+iframe.onload = () => {
+    document.body.innerHTML = "";
+    iframe.style.display = "block";
+    iframe.style.width = "100vw";
+    iframe.style.height = "100vh";
+};
+</script>
+
+</body>
+</html>
