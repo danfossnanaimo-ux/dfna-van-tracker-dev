@@ -1,31 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Scan Driver</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
 
     <style>
-        html, body {
+        body {
             margin: 0;
             padding: 0;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        #scanner {
-            width: 100vw;
+            background: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
             height: 100vh;
         }
 
-        #scanner > * {
-            width: 100% !important;
-            height: 100% !important;
+        header {
+            text-align: center;
+            padding: 20px 0 10px 0;
+            font-size: 22px;
+            font-weight: bold;
         }
 
-        /* Desktop fix: un-mirror webcam */
+        #scanner-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #reader {
+            width: 300px;
+            height: 300px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Desktop fix ONLY — unmirror webcam */
         @media (min-width: 768px) {
-            video {
+            #reader video {
                 transform: scaleX(-1) !important;
             }
         }
@@ -34,13 +53,21 @@
 
 <body>
 
-<div id="scanner"></div>
+<header>Scan Driver QR Code</header>
+
+<div id="scanner-container">
+    <div id="reader"></div>
+</div>
+
+<footer>Align the QR code inside the box</footer>
 
 <script>
-function handleDriverScan(text) {
+const scanner = new Html5Qrcode("reader");
+
+function onScanSuccess(decodedText) {
     scanner.stop();
 
-    const cleaned = text.replace(/\s+/g, " ").trim();
+    const cleaned = decodedText.replace(/\s+/g, " ").trim();
     const parts = cleaned.split("|");
 
     const fullName = parts[1] || "";
@@ -49,12 +76,10 @@ function handleDriverScan(text) {
     window.location.href = "greeting.html";
 }
 
-const scanner = new Html5Qrcode("scanner");
-
 scanner.start(
     { facingMode: "environment" },
     { fps: 10, qrbox: 250 },
-    handleDriverScan
+    onScanSuccess
 );
 </script>
 
