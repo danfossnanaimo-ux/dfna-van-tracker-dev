@@ -1,3 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/dfna-van-tracker-dev/manifest.json">
+<meta name="theme-color" content="#000000">
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/dfna-van-tracker-dev/service-worker.js");
+}
+</script>
+
 <style>
     body {
         margin: 0;
@@ -31,11 +45,85 @@
         font-weight: 500;
         text-align: center;
     }
+</style>
+</head>
 
-    /* Desktop-only fix for mirrored webcams */
-    @media (min-width: 768px) {
-        #preview {
-            transform: scaleX(-1);
+<body>
+
+<div id="container">
+    <video id="preview" autoplay playsinline></video>
+    <p id="caption">Scan Van QR Code</p>
+</div>
+
+<div id="errorOverlay" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    z-index: 9999;
+"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+
+<script>
+    const video = document.getElementById("preview");
+    const overlay = document.getElementById("errorOverlay");
+    let scanner;
+
+    async function startScanner() {
+        try {
+            scanner = new QrScanner(video, result => handleScan(result.data), {
+                preferredCamera: "environment"
+            });
+            await scanner.start();
+        } catch (err) {
+            console.error("Camera failed:", err);
         }
     }
-</style>
+
+    function showError(msg) {
+        overlay.textContent = msg;
+        overlay.style.display = "flex";
+
+        setTimeout(() => {
+            overlay.style.display = "none";
+            startScanner();
+        }, 2000);
+    }
+
+    function handleScan(text) {
+        try {
+            processScan(text);
+        } catch (err) {
+            console.error("Van scan error:", err);
+            showError("Van Not Found");
+        }
+    }
+
+    function processScan(text) {
+        if (!scanner) throw new Error("Scanner not initialized");
+        scanner.stop();
+
+        const vin = text.trim().toUpperCase();
+
+        // Basic VIN validation: 17 alphanumeric chars
+        if (!/^[A-Z0-9]{17}$/.test(vin)) {
+            throw new Error("Invalid VIN");
+        }
+
+        localStorage.setItem("dfnaVIN", vin);
+        window.location.href = "loading.html";
+    }
+
+    window.onload = startScanner;
+</script>
+
+</body>
+</html>
