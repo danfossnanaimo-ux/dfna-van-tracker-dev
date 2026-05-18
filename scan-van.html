@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/dfna-van-tracker-dev/manifest.json">
 <meta name="theme-color" content="#000000">
-<meta charset="UTF-8">
-<title>Scan Van QR Code</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/dfna-van-tracker-dev/service-worker.js");
+}
+</script>
 
 <style>
     body {
