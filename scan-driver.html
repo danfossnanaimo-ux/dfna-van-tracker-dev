@@ -1,138 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/dfna-van-tracker-dev/manifest.json">
-<meta name="theme-color" content="#000000">
+    <meta charset="UTF-8">
+    <title>Scan Driver</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 
-<script>
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/dfna-van-tracker-dev/service-worker.js");
-}
-</script>
-    
-<style>
-    @media (min-width: 768px) {
-        video {
-            transform: scaleX(-1);
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
         }
-    }
 
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: system-ui, sans-serif;
-        color: white;
-    }
+        #scanner {
+            width: 100vw;
+            height: 100vh;
+        }
 
-    #container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+        #scanner > * {
+            width: 100% !important;
+            height: 100% !important;
+        }
 
-    #preview {
-        width: 320px;
-        height: 320px;
-        background: #111;
-        border-radius: 16px;
-        object-fit: cover;
-    }
-
-    #caption {
-        margin-top: 18px;
-        font-size: 22px;
-        font-weight: 500;
-        text-align: center;
-    }
-</style>
+        /* Desktop fix: un-mirror webcam */
+        @media (min-width: 768px) {
+            video {
+                transform: scaleX(-1) !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="container">
-    <video id="preview" autoplay playsinline></video>
-    <p id="caption">Scan Driver QR Code</p>
-</div>
-
-<div id="errorOverlay" style="
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.75);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    font-size: 32px;
-    font-weight: 700;
-    color: white;
-    z-index: 9999;
-"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+<div id="scanner"></div>
 
 <script>
-    const video = document.getElementById("preview");
-    const overlay = document.getElementById("errorOverlay");
-    let scanner;
+function handleDriverScan(text) {
+    scanner.stop();
 
-    async function startScanner() {
-        try {
-            scanner = new QrScanner(video, result => handleScan(result.data), {
-                preferredCamera: "environment"
-            });
-            await scanner.start();
-        } catch (err) {
-            console.error("Camera failed:", err);
-        }
-    }
+    const cleaned = text.replace(/\s+/g, " ").trim();
+    const parts = cleaned.split("|");
 
-    function showError(msg) {
-        overlay.textContent = msg;
-        overlay.style.display = "flex";
+    const fullName = parts[1] || "";
+    localStorage.setItem("driver", fullName);
 
-        setTimeout(() => {
-            overlay.style.display = "none";
-            startScanner();
-        }, 2000);
-    }
+    window.location.href = "greeting.html";
+}
 
-    function handleScan(text) {
-        try {
-            processScan(text);
-        } catch (err) {
-            console.error("Driver scan error:", err);
-            showError("Invalid User");
-        }
-    }
+const scanner = new Html5Qrcode("scanner");
 
-    function processScan(text) {
-        if (!scanner) throw new Error("Scanner not initialized");
-        scanner.stop();
-
-        const cleaned = text.replace(/\s+/g, " ").trim();
-        const parts = cleaned.split("/").map(p => p.trim());
-
-        if (parts.length < 3) throw new Error("Invalid format");
-
-        const user = {
-            name: parts[0],
-            division: parts[1],
-            employeeId: parts[2]
-        };
-
-        localStorage.setItem("dfnaUser", JSON.stringify(user));
-        window.location.href = "/dfna-van-tracker-dev/greeting.html";
-    }
-
-    window.onload = startScanner;
+scanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    handleDriverScan
+);
 </script>
 
 </body>
