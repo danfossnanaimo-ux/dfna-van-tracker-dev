@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<title>Welcome</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/dfna-van-tracker-dev/manifest.json">
 <meta name="theme-color" content="#000000">
-<meta charset="UTF-8">
-<title>Loading Van</title>
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/dfna-van-tracker-dev/service-worker.js");
+}
+</script><title>Loading Van</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
