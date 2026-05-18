@@ -37,7 +37,6 @@
     <div id="infoBar">Loading…</div>
     <div id="map"></div>
 
-    <!-- DEBUG PANEL MUST BE FIRST -->
     <div id="debug" style="
         position: fixed;
         bottom: 0;
@@ -62,13 +61,10 @@
     dbg("index.html loaded");
     </script>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- app.js -->
     <script src="assets/js/app.js" defer></script>
 
-    <!-- Inject map.js -->
     <script>
         dbg("index.html: injecting map.js…");
         const s = document.createElement("script");
