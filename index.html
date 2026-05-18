@@ -91,6 +91,12 @@
 
 <body>
 
+    <script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js");
+    }
+    </script>
+
     <div id="sessionInfo">Loading session…</div>
     <div id="map"></div>
 
