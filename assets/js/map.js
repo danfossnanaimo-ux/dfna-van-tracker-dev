@@ -24,7 +24,7 @@ const yardBoundaryCoords = [
     [49.04099970424841, -123.86796072616107]
 ];
 
-document.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", () => {
     dbg("DOMContentLoaded fired");
 
     const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
