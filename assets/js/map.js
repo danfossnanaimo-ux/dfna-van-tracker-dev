@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Fetch latest van location + update map
 function fetchAndUpdate(van) {
-    fetch("locations.json")
+    fetch("/dfna-van-tracker-dev/data/locations.json")
         .then(res => res.json())
         .then(locations => {
             const vanData = locations.find(v => v.van === van);
