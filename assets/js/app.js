@@ -19,13 +19,10 @@ let map = L.map("map", {
 });
 
 // ---------- FASTEST TILE SERVER (CARTO CDN) ----------
-L.tileLayer(
-    "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
-    {
-        maxZoom: 19,
-        attribution: "&copy; OpenStreetMap &copy; CARTO"
-    }
-).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap &copy; CARTO'
+}).addTo(map);
 
 // ---------- MARKER STORAGE ----------
 let vanMarkers = {};
