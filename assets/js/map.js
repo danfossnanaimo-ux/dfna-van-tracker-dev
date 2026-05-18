@@ -16,71 +16,73 @@ let yardBoundaryLayer;
 --------------------------------------------------------- */
 
 // Blue circular van marker with number
-function vanIcon(number, opacity = 1.0, isSelected = false) {
+function vanIcon(number, opacity, isSelected) {
+    if (opacity === undefined) opacity = 1.0;
+    if (isSelected === undefined) isSelected = false;
+
+    var bg = isSelected ? "#00c853" : "#1976d2";
+
+    var html =
+        '<div style="' +
+            'width:34px;' +
+            'height:34px;' +
+            'border-radius:50%;' +
+            'background:' + bg + ';' +
+            'opacity:' + opacity + ';' +
+            'display:flex;' +
+            'align-items:center;' +
+            'justify-content:center;' +
+            'color:white;' +
+            'font-weight:bold;' +
+            'font-size:14px;' +
+            'border:2px solid white;' +
+            'box-shadow:0 0 6px rgba(0,0,0,0.4);' +
+        '">' +
+            number +
+        '</div>';
+
     return L.divIcon({
-        html: `
-            <div style="
-                width: 34px;
-                height: 34px;
-                border-radius: 50%;
-                background: ${isSelected ? "#00c853" : "#1976d2"};
-                opacity: ${opacity};
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid white;
-                box-shadow: 0 0 6px rgba(0,0,0,0.4);
-            ">
-                ${number}
-            </div>
-        `,
+        html: html,
         className: "",
         iconSize: [34, 34]
     });
 }
 
-// Pulsing green user marker
-const userIcon = L.divIcon({
-    html: `
-        <div style="position: relative; width: 34px; height: 34px;">
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 20px;
-                height: 20px;
-                background: #00e676;
-                border-radius: 50%;
-                transform: translate(-50%, -50%);
-                box-shadow: 0 0 10px rgba(0, 230, 118, 0.8);
-            "></div>
+// Pulsing green user marker (no <style> tag, just simple glow)
+function makeUserIcon() {
+    var html =
+        '<div style="position:relative;width:34px;height:34px;">' +
+            '<div style="' +
+                'position:absolute;' +
+                'top:50%;' +
+                'left:50%;' +
+                'width:20px;' +
+                'height:20px;' +
+                'background:#00e676;' +
+                'border-radius:50%;' +
+                'transform:translate(-50%,-50%);' +
+                'box-shadow:0 0 10px rgba(0,230,118,0.8);' +
+            '"></div>' +
+            '<div style="' +
+                'position:absolute;' +
+                'top:50%;' +
+                'left:50%;' +
+                'width:34px;' +
+                'height:34px;' +
+                'border-radius:50%;' +
+                'background:rgba(0,230,118,0.25);' +
+                'transform:translate(-50%,-50%);' +
+            '"></div>' +
+        '</div>';
 
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 34px;
-                height: 34px;
-                border-radius: 50%;
-                background: rgba(0, 230, 118, 0.25);
-                transform: translate(-50%, -50%);
-                animation: pulse 1.5s infinite;
-            "></div>
-        </div>
+    return L.divIcon({
+        html: html,
+        className: "",
+        iconSize: [34, 34]
+    });
+}
 
-        <style>
-        @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
-        }
-        </style>
-    `,
-    className: "",
-    iconSize: [34, 34]
-});
+var userIcon = makeUserIcon();
 
 /* ---------------------------------------------------------
    YARD BOUNDARY
@@ -100,17 +102,13 @@ const yardBoundaryCoords = [
 ];
 
 /* ---------------------------------------------------------
-   BULLETPROOF INITIALIZER
+   INIT (SIMPLE, BULLETPROOF)
 --------------------------------------------------------- */
 
-(function init() {
-    if (document.readyState === "loading") {
-        dbg("DOM not ready yet — waiting…");
-        document.addEventListener("DOMContentLoaded", init);
-        return;
-    }
+window.addEventListener("load", init);
 
-    dbg("DOMContentLoaded fired (safe init)");
+function init() {
+    dbg("window.load fired (init)");
 
     const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
     const driver = user.name || "Unknown";
@@ -125,12 +123,12 @@ const yardBoundaryCoords = [
         return;
     }
 
-    dbg("Initializing map…");
-
     if (typeof L === "undefined") {
         dbg("ERROR: Leaflet L is undefined");
         return;
     }
+
+    dbg("Initializing map…");
 
     map = L.map("map", {
         zoomControl: true,
@@ -155,7 +153,7 @@ const yardBoundaryCoords = [
         dbg("ERROR adding yard boundary: " + e);
     }
 
-    dbg("Fitting bounds…");
+    dbg("Fitting bounds to yard…");
     try {
         map.fitBounds(yardBoundaryLayer.getBounds());
         dbg("Bounds fit OK");
@@ -167,8 +165,10 @@ const yardBoundaryCoords = [
     fetchAndUpdate(van);
 
     dbg("Starting interval…");
-    setInterval(() => fetchAndUpdate(van), 10000);
-})();
+    setInterval(function () {
+        fetchAndUpdate(van);
+    }, 10000);
+}
 
 /* ---------------------------------------------------------
    FETCH + UPDATE MARKERS
@@ -178,14 +178,17 @@ function fetchAndUpdate(van) {
     dbg("fetchAndUpdate called for van=" + van);
 
     fetch("/dfna-van-tracker-dev/data/locations.json")
-        .then(res => {
+        .then(function (res) {
             dbg("Fetch response status=" + res.status);
             return res.json();
         })
-        .then(locations => {
+        .then(function (locations) {
             dbg("JSON loaded, count=" + locations.length);
 
-            const vanData = locations.find(v => v.vin === van);
+            var vanData = locations.find(function (v) {
+                return v.vin === van;
+            });
+
             dbg("vanData=" + JSON.stringify(vanData));
 
             if (!vanData) {
@@ -193,13 +196,14 @@ function fetchAndUpdate(van) {
                 return;
             }
 
-            const lat = vanData.gps.latitude;
-            const lng = vanData.gps.longitude;
+            var lat = vanData.gps.latitude;
+            var lng = vanData.gps.longitude;
 
             // Extract van number from "209 DFNA"
-            const vanNumber = (vanData.name || "").split(" ")[0];
+            var name = vanData.name || "";
+            var vanNumber = name.split(" ")[0] || "??";
 
-            dbg("Van coords: " + lat + ", " + lng);
+            dbg("Van coords: " + lat + ", " + lng + " number=" + vanNumber);
 
             // VAN MARKER
             if (!vanMarker) {
@@ -213,28 +217,51 @@ function fetchAndUpdate(van) {
                 vanMarker.setIcon(vanIcon(vanNumber));
             }
 
-            // USER MARKER
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    const uLat = pos.coords.latitude;
-                    const uLng = pos.coords.longitude;
-
-                    if (!userMarker) {
-                        dbg("Creating user marker…");
-                        userMarker = L.marker([uLat, uLng], { icon: userIcon }).addTo(map);
-                    } else {
-                        userMarker.setLatLng([uLat, uLng]);
-                    }
-
-                    // ALWAYS FIT BOTH USER + VAN
-                    const group = L.featureGroup([vanMarker, userMarker]);
-                    map.fitBounds(group.getBounds(), { padding: [50, 50] });
-                });
-            }
-
-            dbg("Van marker updated OK");
+            // UPDATE USER + FIT VIEW
+            updateUserAndFit(lat, lng);
         })
-        .catch(err => {
+        .catch(function (err) {
             dbg("FETCH ERROR: " + err);
         });
+}
+
+/* ---------------------------------------------------------
+   USER + AUTO-FIT
+--------------------------------------------------------- */
+
+function updateUserAndFit(vanLat, vanLng) {
+    if (!navigator.geolocation) {
+        dbg("Geolocation not available; centering on van only");
+        if (vanMarker) {
+            map.setView([vanLat, vanLng], 18);
+        }
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function (pos) {
+            var uLat = pos.coords.latitude;
+            var uLng = pos.coords.longitude;
+
+            if (!userMarker) {
+                dbg("Creating user marker…");
+                userMarker = L.marker([uLat, uLng], { icon: userIcon }).addTo(map);
+            } else {
+                userMarker.setLatLng([uLat, uLng]);
+            }
+
+            // ALWAYS FIT BOTH USER + VAN
+            if (vanMarker && userMarker) {
+                var group = L.featureGroup([vanMarker, userMarker]);
+                map.fitBounds(group.getBounds(), { padding: [50, 50] });
+                dbg("Fitted bounds to user + van");
+            }
+        },
+        function (err) {
+            dbg("Geolocation error: " + err.message);
+            if (vanMarker) {
+                map.setView([vanLat, vanLng], 18);
+            }
+        }
+    );
 }
