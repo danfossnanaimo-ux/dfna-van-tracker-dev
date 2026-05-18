@@ -34,20 +34,6 @@ if ("serviceWorker" in navigator) {
 <div id="msg"></div>
 
 <script>
-// Show initial message while waiting for map to load
-document.getElementById("msg").innerHTML = `
-    <div style="
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        height:100vh;
-        width:100vw;
-        font-size:40px;
-        font-weight:700;
-    ">
-        Locating…
-    </div>
-`;
 
 // Load the map in a hidden iframe
 const iframe = document.createElement("iframe");
@@ -74,7 +60,7 @@ window.addEventListener("message", (event) => {
                 font-size:40px;
                 font-weight:700;
             ">
-                Locating…<br>Van ${van}
+                Locating<br>Van ${van}
             </div>
         `;
 
