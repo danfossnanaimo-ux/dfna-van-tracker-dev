@@ -1,77 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    
+<meta charset="UTF-8">
+<title>Loading…</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/dfna-van-tracker-dev/manifest.json">
-<meta name="theme-color" content="#000000">
-
-<script>
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/dfna-van-tracker-dev/service-worker.js");
-}
-</script>
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        width: 100vw;
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: system-ui, sans-serif;
-        color: white;
-        text-align: center;
-    }
+body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    color: white;
+    font-family: system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 28px;
+}
 </style>
-</head>
 
+</head>
 <body>
 
-<div id="msg"></div>
+<div id="msg">Loading map…</div>
 
 <script>
-
-// Load the map in a hidden iframe
-const iframe = document.createElement("iframe");
-iframe.src = "./index.html";
-iframe.style.display = "none";
-iframe.style.width = "100vw";
-iframe.style.height = "100vh";
-iframe.style.border = "none";
-document.body.appendChild(iframe);
-
-// Wait for app.js to send MAP_READY with vanNumber
-window.addEventListener("message", (event) => {
-    if (event.data?.type === "MAP_READY") {
-        const van = event.data.vanNumber || "Unknown";
-
-        // Update loading message to show van number
-        document.getElementById("msg").innerHTML = `
-            <div style="
-                display:flex;
-                justify-content:center;
-                align-items:center;
-                height:100vh;
-                width:100vw;
-                font-size:40px;
-                font-weight:700;
-            ">
-                Locating<br>Van ${van}
-            </div>
-        `;
-
-        // After a short delay, reveal the map
-setTimeout(() => {
-    document.getElementById("msg").remove();   // remove loading message ONLY
-    iframe.style.display = "block";            // show the map iframe
-}, 600);
-
-    }
+// Wait for MAP_READY from index.html
+window.addEventListener("MAP_READY", () => {
+    window.location.href = "/dfna-van-tracker-dev/index.html";
 });
+
+// Safety fallback: if map never signals, force load after 5 sec
+setTimeout(() => {
+    window.location.href = "/dfna-van-tracker-dev/index.html";
+}, 5000);
 </script>
 
 </body>
