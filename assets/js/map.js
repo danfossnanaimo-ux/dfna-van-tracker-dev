@@ -1,15 +1,16 @@
 function dbg(msg) {
-    var box = document.getElementById("debug");
+    const box = document.getElementById("debug");
     if (box) box.textContent += msg + "\n";
     console.log(msg);
 }
 
 dbg("map.js loaded");
 
-var map;
-var vanMarker;
-var userMarker;
-var yardBoundaryLayer;
+let map;
+let vanMarker;
+let userMarker;
+let yardBoundaryLayer;
+let firstFitDone = false;
 
 /* ---------------------------------------------------------
    UI CLEANUP
@@ -27,6 +28,7 @@ function hideLoadingAndDebug() {
    CUSTOM MARKERS
 --------------------------------------------------------- */
 
+// Blue circular van marker with number
 function vanIcon(number) {
     var html =
         '<div style="' +
@@ -53,6 +55,7 @@ function vanIcon(number) {
     });
 }
 
+// Pulsing green user marker (simple glow)
 function makeUserIcon() {
     var html =
         '<div style="position:relative;width:34px;height:34px;">' +
@@ -80,7 +83,7 @@ var userIcon = makeUserIcon();
    YARD BOUNDARY
 --------------------------------------------------------- */
 
-var yardBoundaryCoords = [
+const yardBoundaryCoords = [
     [49.04099970424841, -123.86796072616107],
     [49.04104856987419, -123.8678059019293],
     [49.041067364333145, -123.865328714224],
@@ -92,7 +95,7 @@ var yardBoundaryCoords = [
 ];
 
 /* ---------------------------------------------------------
-   INIT
+   INIT (SAFE, SIMPLE)
 --------------------------------------------------------- */
 
 window.addEventListener("load", init);
@@ -100,9 +103,9 @@ window.addEventListener("load", init);
 function init() {
     dbg("window.load fired (init)");
 
-    var user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
-    var driver = user.name || "Unknown";
-    var van = localStorage.getItem("dfnaVIN");
+    const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
+    const driver = user.name || "Unknown";
+    const van = localStorage.getItem("dfnaVIN");
 
     dbg("driver=" + driver);
     dbg("van=" + van);
@@ -154,8 +157,10 @@ function fetchAndUpdate(van) {
             var lat = vanData.gps.latitude;
             var lng = vanData.gps.longitude;
 
+            // Extract van number from "209 DFNA"
             var vanNumber = (vanData.name || "").split(" ")[0] || "??";
 
+            // VAN MARKER
             if (!vanMarker) {
                 vanMarker = L.marker([lat, lng], { icon: vanIcon(vanNumber) }).addTo(map);
             } else {
@@ -189,6 +194,7 @@ function updateUserAndFit(vanLat, vanLng) {
                 userMarker.setLatLng([uLat, uLng]);
             }
 
+            // ALWAYS FIT BOTH USER + VAN
             if (vanMarker && userMarker) {
                 var group = L.featureGroup([vanMarker, userMarker]);
                 map.fitBounds(group.getBounds(), { padding: [50, 50] });
@@ -197,6 +203,7 @@ function updateUserAndFit(vanLat, vanLng) {
             hideLoadingAndDebug();
         },
         function () {
+            // If geolocation fails, center on van
             if (vanMarker) map.setView([vanLat, vanLng], 18);
             hideLoadingAndDebug();
         }
