@@ -28,29 +28,38 @@ if ("serviceWorker" in navigator) {
         text-align: center;
     }
 
+    /* Logo 25% larger */
     #logo {
-        width: 260px;
-        max-width: 80%;
-        margin-bottom: 40px;
+        width: 325px; /* previously 260px */
+        max-width: 85%;
+        margin-bottom: 50px;
     }
 
+    /* Button 25% smaller + pulsing animation */
     #startBtn {
-        padding: 22px 40px;
-        font-size: 24px;
+        padding: 16px 30px; /* reduced from 22px 40px */
+        font-size: 20px;    /* reduced from 24px */
         font-weight: 700;
         border-radius: 14px;
         border: none;
         background: white;
         color: black;
+        animation: pulse 1.6s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.08); }
+        100% { transform: scale(1); }
     }
 </style>
 </head>
 
 <body>
 
-<img id="logo" src="assets/logo/logo.png" alt="Danfoss Logo">
+<img id="logo" src="assets/img/danfoss-logo.png" alt="Danfoss Logo">
 
-<button id="startBtn">Start Locating Van</button>
+<button id="startBtn">Locate Van</button>
 
 <script>
 document.getElementById("startBtn").onclick = () => {
