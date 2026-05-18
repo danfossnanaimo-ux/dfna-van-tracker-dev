@@ -8,7 +8,6 @@ dbg("map.js loaded");
 
 let map;
 let vanMarker;
-let firstLoad = true;
 let yardBoundaryLayer;
 
 dbg("Defining yard boundary…");
@@ -30,12 +29,14 @@ const yardBoundaryCoords = [
    already fired before map.js was injected.
 --------------------------------------------------------- */
 (function init() {
+    // If DOM is still loading → wait
     if (document.readyState === "loading") {
         dbg("DOM not ready yet — waiting…");
         document.addEventListener("DOMContentLoaded", init);
         return;
     }
 
+    // If DOM is already ready → run immediately
     dbg("DOMContentLoaded fired (safe init)");
 
     const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
