@@ -48,7 +48,20 @@
     <p id="caption">Scan Driver QR Code</p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+<div id="errorOverlay" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    z-index: 9999;
+"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
 
@@ -79,15 +92,22 @@
     }
 
     function handleScan(text) {
+        try {
+            processScan(text);
+        } catch (err) {
+            console.error("Driver scan error:", err);
+            showError("Invalid User");
+        }
+    }
+
+    function processScan(text) {
+        if (!scanner) throw new Error("Scanner not initialized");
         scanner.stop();
 
         const cleaned = text.replace(/\s+/g, " ").trim();
         const parts = cleaned.split("/").map(p => p.trim());
 
-        if (parts.length < 3) {
-            showError("Invalid User");
-            return;
-        }
+        if (parts.length < 3) throw new Error("Invalid format");
 
         const user = {
             name: parts[0],
@@ -101,21 +121,6 @@
 
     window.onload = startScanner;
 </script>
-
-    <div id="errorOverlay" style="
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.75);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    font-size: 32px;
-    font-weight: 700;
-    color: white;
-    z-index: 9999;
-"></div>
 
 </body>
 </html>
