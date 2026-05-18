@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Scan Van QR Code</title>
@@ -48,7 +48,20 @@
     <p id="caption">Scan Van QR Code</p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+<div id="errorOverlay" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    z-index: 9999;
+"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
 
@@ -79,14 +92,23 @@
     }
 
     function handleScan(text) {
+        try {
+            processScan(text);
+        } catch (err) {
+            console.error("Van scan error:", err);
+            showError("Van Not Found");
+        }
+    }
+
+    function processScan(text) {
+        if (!scanner) throw new Error("Scanner not initialized");
         scanner.stop();
 
         const vin = text.trim().toUpperCase();
 
-        // Basic VIN validation (17 chars alphanumeric)
+        // Basic VIN validation: 17 alphanumeric chars
         if (!/^[A-Z0-9]{17}$/.test(vin)) {
-            showError("Van Not Found");
-            return;
+            throw new Error("Invalid VIN");
         }
 
         localStorage.setItem("dfnaVIN", vin);
@@ -95,21 +117,6 @@
 
     window.onload = startScanner;
 </script>
-
-    <div id="errorOverlay" style="
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.75);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    font-size: 32px;
-    font-weight: 700;
-    color: white;
-    z-index: 9999;
-"></div>
 
 </body>
 </html>
