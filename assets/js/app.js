@@ -1,180 +1,126 @@
-document.addEventListener("DOMContentLoaded", () => {
+// ============================================================
+// DFNA VAN TRACKER — OPTIMIZED APP.JS
+// Fast tile loading, smooth animation, stable refresh
+// ============================================================
 
-    // --- GET VIN FROM LOCAL STORAGE & SANITIZE ---
-    let selectedVIN = (localStorage.getItem("dfnaVIN") || "")
-        .toUpperCase()
-        .replace(/[^A-Z0-9]/g, "")
-        .trim();
+// ---------- CONFIG ----------
+const DATA_URL = `/dfna-van-tracker-dev/data/locations.json?v=${Date.now()}`;
+const REFRESH_INTERVAL = 5000; // 5 seconds
+const INITIAL_ZOOM = 17;
 
-    console.log("Selected VIN:", selectedVIN);
+// ---------- MAP INITIALIZATION ----------
+let map = L.map("map", {
+    center: [49.1659, -123.9401], // Nanaimo default
+    zoom: INITIAL_ZOOM,
+    zoomAnimation: false,
+    fadeAnimation: false,
+    markerZoomAnimation: false,
+    preferCanvas: true
+});
 
-    // --- SESSION INFO BAR ---
-    const sessionBox = document.getElementById("sessionInfo");
-    const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
-    const userName = user.name || "??";
-    sessionBox.innerText = "User: " + userName + " | VIN: " + (selectedVIN || "??");
-
-    // --- MAP INIT ---
-    window.map = L.map("map", {
-        zoomControl: true,
-        attributionControl: false
-    }).setView([49.1659, -123.9401], 11);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19
-    }).addTo(window.map);
-
-    // Force Leaflet to size correctly inside iframe
-    setTimeout(() => {
-        window.map.invalidateSize();
-    }, 400);
-
-    // --- ICONS ---
-    const vanIcon = function (label, opacity, isSelected) {
-        return L.divIcon({
-            html: `
-                <div style="
-                    width: 34px;
-                    height: 34px;
-                    border-radius: 50%;
-                    background: ${isSelected ? "#00c853" : "#1976d2"};
-                    opacity: ${opacity};
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-weight: bold;
-                    font-size: 12px;
-                    border: 2px solid white;
-                    box-shadow: 0 0 6px rgba(0,0,0,0.4);
-                ">
-                    ${label}
-                </div>
-            `,
-            className: "",
-            iconSize: [34, 34]
-        });
-    };
-
-    const userIcon = L.divIcon({
-        html: `
-            <div class="user-pulse">
-                <div class="pulse-ring"></div>
-                <div class="inner-dot"></div>
-            </div>
-        `,
-        className: "",
-        iconSize: [40, 40],
-        iconAnchor: [20, 20]
-    });
-
-    let userMarker = null;
-
-    // --- DISTANCE HELPER ---
-    function distanceMeters(lat1, lon1, lat2, lon2) {
-        const R = 6371000;
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a =
-            Math.sin(dLat / 2) ** 2 +
-            Math.cos(lat1 * Math.PI / 180) *
-            Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLon / 2) ** 2;
-
-        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+// ---------- FASTEST TILE SERVER (CARTO CDN) ----------
+L.tileLayer(
+    "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+    {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap &copy; CARTO"
     }
+).addTo(map);
 
-    // --- VAN NUMBER EXTRACTOR ---
-    function extractVanNumber(name) {
-        const match = name.match(/\b\d+\b/);
-        return match ? match[0] : "Unknown";
-    }
+// ---------- MARKER STORAGE ----------
+let vanMarkers = {};
+let userMarker = null;
 
-    // --- LOAD VAN LOCATIONS ---
-    fetch("data/locations.json?v=999")
-        .then(res => res.json())
-        .then(vans => {
+// ---------- USER LOCATION ----------
+function trackUserLocation() {
+    if (!navigator.geolocation) return;
 
-            console.log("Available VINs:");
-            vans.forEach(v => console.log(v.vin));
-
-            let selectedLat = null;
-            let selectedLng = null;
-            let vanNumber = "Unknown";
-
-            // --- FIND MATCHING VIN ---
-            vans.forEach(v => {
-                if (!v.vin) return;
-
-                const cleanVIN = v.vin.toUpperCase().replace(/[^A-Z0-9]/g, "").trim();
-
-                if (cleanVIN === selectedVIN) {
-                    selectedLat = v.gps.latitude;
-                    selectedLng = v.gps.longitude;
-                    vanNumber = extractVanNumber(v.name || "");
-                }
-            });
-
-            // --- IF NO MATCH, STOP ---
-            if (!selectedLat || !selectedLng) {
-                console.error("VIN not found in locations.json");
-                return;
-            }
-
-            // --- SEND MAP_READY TO loading.html ---
-            window.parent.postMessage({
-                type: "MAP_READY",
-                vanNumber: vanNumber
-            }, "*");
-
-            // --- CENTER MAP ON SELECTED VAN ---
-            window.selectedVanLat = selectedLat;
-            window.selectedVanLng = selectedLng;
-            window.map.setView([selectedLat, selectedLng], 17);
-
-            // --- DRAW ALL VANS ---
-            vans.forEach(v => {
-                const lat = v.gps.latitude;
-                const lng = v.gps.longitude;
-                if (!lat || !lng) return;
-
-                const label = extractVanNumber(v.name || "");
-                const cleanVIN = v.vin.toUpperCase().replace(/[^A-Z0-9]/g, "").trim();
-
-                if (cleanVIN === selectedVIN) {
-                    L.marker([lat, lng], { icon: vanIcon(label, 1.0, true) }).addTo(window.map);
-                    return;
-                }
-
-                const dist = distanceMeters(selectedLat, selectedLng, lat, lng);
-                if (dist <= 10) {
-                    L.marker([lat, lng], { icon: vanIcon(label, 0.3, false) }).addTo(window.map);
-                }
-            });
-
-        });
-
-    // --- USER LOCATION TRACKING ---
-    if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(pos => {
+    navigator.geolocation.watchPosition(
+        pos => {
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
 
             if (!userMarker) {
-                userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(window.map);
+                userMarker = L.circleMarker([lat, lng], {
+                    radius: 10,
+                    color: "#00ff00",
+                    fillColor: "#00ff00",
+                    fillOpacity: 0.8
+                }).addTo(map);
             } else {
                 userMarker.setLatLng([lat, lng]);
             }
+        },
+        err => console.warn("GPS error:", err),
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+    );
+}
 
-            if (window.selectedVanLat && window.selectedVanLng) {
-                const bounds = L.latLngBounds([
-                    [lat, lng],
-                    [window.selectedVanLat, window.selectedVanLng]
-                ]);
-                window.map.fitBounds(bounds, { padding: [80, 80] });
-            }
-
-        });
+// ---------- FETCH VAN DATA ----------
+async function fetchVanData() {
+    try {
+        const response = await fetch(DATA_URL);
+        return await response.json();
+    } catch (err) {
+        console.error("Error loading van data:", err);
+        return [];
     }
+}
 
-});
+// ---------- UPDATE MARKERS ----------
+function updateMarkers(vans) {
+    vans.forEach(van => {
+        const { VIN, lat, lng } = van;
+        if (!lat || !lng) return;
+
+        if (!vanMarkers[VIN]) {
+            // Create marker
+            vanMarkers[VIN] = L.marker([lat, lng], {
+                title: VIN
+            }).addTo(map);
+        } else {
+            // Update marker
+            vanMarkers[VIN].setLatLng([lat, lng]);
+        }
+    });
+}
+
+// ---------- VAN-CENTERED ANIMATION ----------
+function animateToVan(vans) {
+    if (vans.length === 0) return;
+
+    const firstVan = vans[0];
+    if (!firstVan.lat || !firstVan.lng) return;
+
+    map.flyTo([firstVan.lat, firstVan.lng], INITIAL_ZOOM, {
+        animate: true,
+        duration: 1.2
+    });
+
+    // Pulse the van marker
+    const marker = vanMarkers[firstVan.VIN];
+    if (marker && marker._icon) {
+        marker._icon.style.transition = "transform 0.4s ease";
+        marker._icon.style.transform = "scale(1.3)";
+        setTimeout(() => {
+            marker._icon.style.transform = "scale(1)";
+        }, 400);
+    }
+}
+
+// ---------- MAIN REFRESH LOOP ----------
+async function refresh() {
+    const vans = await fetchVanData();
+    updateMarkers(vans);
+}
+
+// ---------- INITIAL LOAD ----------
+(async function init() {
+    trackUserLocation();
+
+    const vans = await fetchVanData();
+    updateMarkers(vans);
+    animateToVan(vans);
+
+    setInterval(refresh, REFRESH_INTERVAL);
+})();
