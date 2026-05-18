@@ -20,8 +20,9 @@ const yardBoundaryCoords = [
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Map page loaded");
 
-    const driver = localStorage.getItem("driver");
-    const van = localStorage.getItem("van");
+    const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
+    const driver = user.name || "Unknown";
+    const van = localStorage.getItem("dfnaVIN");
 
     if (!driver || !van) {
         alert("Missing scan data. Please restart the app.");
