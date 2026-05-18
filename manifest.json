@@ -1,7 +1,7 @@
 {
   "name": "DFNA Van Tracker",
   "short_name": "Van Tracker",
-  "start_url": "index.html",
+  "start_url": "scan-driver.html",
   "scope": "/dfna-van-tracker-dev/",
   "display": "standalone",
   "background_color": "#000000",
