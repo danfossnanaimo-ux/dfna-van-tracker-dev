@@ -24,8 +24,19 @@ const yardBoundaryCoords = [
     [49.04099970424841, -123.86796072616107]
 ];
 
-window.addEventListener("DOMContentLoaded", () => {
-    dbg("DOMContentLoaded fired");
+/* ---------------------------------------------------------
+   BULLETPROOF INITIALIZER
+   Ensures map setup ALWAYS runs, even if DOMContentLoaded
+   already fired before map.js was injected.
+--------------------------------------------------------- */
+(function init() {
+    if (document.readyState === "loading") {
+        dbg("DOM not ready yet — waiting…");
+        document.addEventListener("DOMContentLoaded", init);
+        return;
+    }
+
+    dbg("DOMContentLoaded fired (safe init)");
 
     const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
     const driver = user.name || "Unknown";
@@ -83,9 +94,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
     dbg("Starting interval…");
     setInterval(() => fetchAndUpdate(van), 10000);
-});
+})();
 
-
+/* ---------------------------------------------------------
+   FETCH + UPDATE MARKER
+--------------------------------------------------------- */
 function fetchAndUpdate(van) {
     dbg("fetchAndUpdate called for van=" + van);
 
