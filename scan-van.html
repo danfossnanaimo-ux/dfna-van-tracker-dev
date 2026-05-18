@@ -1,87 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Scan Van</title>
-    <script src="https://unpkg.com/html5-qrcode"></script>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: system-ui, sans-serif;
+        color: white;
+    }
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+    #container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #preview {
+        width: 320px;
+        height: 320px;
+        background: #111;
+        border-radius: 16px;
+        object-fit: cover;
+    }
+
+    #caption {
+        margin-top: 18px;
+        font-size: 22px;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    /* Desktop-only fix for mirrored webcams */
+    @media (min-width: 768px) {
+        #preview {
+            transform: scaleX(-1);
         }
-
-        header {
-            text-align: center;
-            padding: 20px 0 10px 0;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        #scanner-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #reader {
-            width: 300px;
-            height: 300px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 15px 0;
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* Desktop fix ONLY — unmirror webcam */
-        @media (min-width: 768px) {
-            #reader video {
-                transform: scaleX(-1) !important;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<header>Scan Van QR Code</header>
-
-<div id="scanner-container">
-    <div id="reader"></div>
-</div>
-
-<footer>Align the QR code inside the box</footer>
-
-<script>
-const scanner = new Html5Qrcode("reader");
-
-function onScanSuccess(decodedText) {
-    scanner.stop();
-
-    const cleaned = decodedText.replace(/\s+/g, " ").trim();
-    const parts = cleaned.split("|");
-
-    const vanNumber = parts[1] || "Unknown";
-    localStorage.setItem("van", vanNumber);
-
-    window.location.href = "loading.html";
-}
-
-scanner.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    onScanSuccess
-);
-</script>
-
-</body>
-</html>
+    }
+</style>
