@@ -1,5 +1,3 @@
-// assets/js/map.js
-
 function dbg(msg) {
     const box = document.getElementById("debug");
     if (box) box.textContent += msg + "\n";
@@ -29,7 +27,6 @@ const yardBoundaryCoords = [
 document.addEventListener("DOMContentLoaded", () => {
     dbg("DOMContentLoaded fired");
 
-    dbg("Checking localStorage…");
     const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
     const driver = user.name || "Unknown";
     const van = localStorage.getItem("dfnaVIN");
