@@ -8,13 +8,14 @@
 <link rel="manifest" href="/dfna-van-tracker-dev/manifest.json">
 <meta name="theme-color" content="#000000">
 
+<!-- SINGLE, CORRECT SERVICE WORKER REGISTRATION -->
 <script>
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/dfna-van-tracker-dev/service-worker.js");
 }
 </script>
 
-    <style>
+<style>
     html, body {
         height: 100%;
         margin: 0;
@@ -52,26 +53,26 @@ if ("serviceWorker" in navigator) {
 
     .user-pulse {
         position: relative;
-        width: 48px;   /* doubled from 24 */
-        height: 48px;  /* doubled from 24 */
+        width: 48px;
+        height: 48px;
     }
 
     .inner-dot {
-        width: 28px;   /* doubled from 14 */
+        width: 28px;
         height: 28px;
         background: #00ff55;
         border-radius: 50%;
         position: absolute;
-        top: 10px;     /* doubled from 5 */
+        top: 10px;
         left: 10px;
         z-index: 2;
     }
 
     .pulse-ring {
         position: absolute;
-        width: 48px;   /* doubled from 24 */
+        width: 48px;
         height: 48px;
-        border: 6px solid #00ff55;  /* doubled from 3 */
+        border: 6px solid #00ff55;
         border-radius: 50%;
         animation: pulse 1.6s infinite;
         opacity: 0.7;
@@ -97,23 +98,17 @@ if ("serviceWorker" in navigator) {
 
 <body>
 
-    <script>
-    if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/service-worker.js");
-    }
-    </script>
-
     <div id="sessionInfo">Loading session…</div>
     <div id="map"></div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Your app logic -->
-    <script src="assets/js/app.js?v=11"></script>
+    <!-- Your optimized app logic -->
+    <script src="assets/js/app.js?v=12"></script>
 
     <script>
-        // Force Leaflet to recalc size once iframe becomes visible
+        // Force Leaflet to recalc size once visible
         setTimeout(() => {
             if (window.map && window.map.invalidateSize) {
                 window.map.invalidateSize();
