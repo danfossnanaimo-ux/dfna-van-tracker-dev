@@ -56,4 +56,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Start live tracking
     fetchAndUpdate(van);
-    setInterval(()
+    setInterval(() => fetchAndUpdate(van), 10000); // every 10 seconds
+});
+
+
+// Fetch latest van location + update map
+function fetchAndUpdate(van) {
+    fetch("locations.json")
+        .then(res => res.json())
+        .then(locations => {
+            const vanData = locations.find(v => v.van === van);
+
+            if (!vanData) {
+                console.error("Van not found in locations.json");
+                return;
+            }
+
+            const { lat, lng } = vanData;
+
+            // First time: create marker + zoom to van
+            if (!vanMarker) {
+                vanMarker = L.marker([lat, lng]).addTo(map);
+                vanMarker.bindPopup(`Van ${van}`).openPopup();
+
+                if (firstLoad) {
+                    map.setView([lat, lng], 17, { animate: true });
+                    firstLoad = false;
+                }
+            } else {
+                // Update marker position smoothly
+                vanMarker.setLatLng([lat, lng]);
+            }
+
+            console.log(`Updated van ${van} location:`, lat, lng);
+        })
+        .catch(err => {
+            console.error("Error loading locations.json:", err);
+        });
+}
