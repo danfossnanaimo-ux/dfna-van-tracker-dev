@@ -97,7 +97,7 @@ function fetchAndUpdate(van) {
         .then(locations => {
             dbg("JSON loaded, count=" + locations.length);
 
-            const vanData = locations.find(v => v.van === van);
+            const vanData = locations.find(v => v.vin === van);
             dbg("vanData=" + JSON.stringify(vanData));
 
             if (!vanData) {
@@ -105,7 +105,9 @@ function fetchAndUpdate(van) {
                 return;
             }
 
-            const { lat, lng } = vanData;
+            const lat = vanData.gps.latitude;
+            const lng = vanData.gps.longitude;
+
             dbg("Van coords: " + lat + ", " + lng);
 
             if (!vanMarker) {
