@@ -20,9 +20,9 @@ if ("serviceWorker" in navigator) {
         height: 100vh;
         background: #000;
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
         font-family: system-ui, sans-serif;
         color: white;
         text-align: center;
@@ -30,41 +30,27 @@ if ("serviceWorker" in navigator) {
 
     /* Logo 25% larger */
     #logo {
-        width: 325px; /* previously 260px */
+        width: 325px;
         max-width: 85%;
-        margin-bottom: 50px;
+        margin-bottom: 20px;
     }
 
-    /* Button 25% smaller + pulsing animation */
-    #startBtn {
-        padding: 16px 30px; /* reduced from 22px 40px */
-        font-size: 20px;    /* reduced from 24px */
-        font-weight: 700;
-        border-radius: 14px;
-        border: none;
-        background: white;
-        color: black;
-        animation: pulse 1.6s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.08); }
-        100% { transform: scale(1); }
+    #caption {
+        font-size: 22px;
+        opacity: 0.85;
     }
 </style>
 </head>
 
 <body>
 
-<img id="logo" src="assets/logo/logo.png" alt="Danfoss Logo">
-
-<button id="startBtn">Locate Van</button>
+<img id="logo" src="assets/img/danfoss-logo.png" alt="Danfoss Logo">
+<div id="caption">Locate Van</div>
 
 <script>
-document.getElementById("startBtn").onclick = () => {
+setTimeout(() => {
     window.location.href = "scan-driver.html";
-};
+}, 3000);
 </script>
 
 </body>
