@@ -50,8 +50,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+
 <script>
     const video = document.getElementById("preview");
+    const overlay = document.getElementById("errorOverlay");
     let scanner;
 
     async function startScanner() {
@@ -61,30 +64,28 @@
             });
             await scanner.start();
         } catch (err) {
-            fallbackToDefaultCamera();
-        }
-    }
-
-    async function fallbackToDefaultCamera() {
-        try {
-            scanner = new QrScanner(video, result => handleScan(result.data), {
-                preferredCamera: "auto"
-            });
-            await scanner.start();
-        } catch (err) {
             console.error("Camera failed:", err);
         }
     }
 
-    async function handleScan(text) {
+    function showError(msg) {
+        overlay.textContent = msg;
+        overlay.style.display = "flex";
+
+        setTimeout(() => {
+            overlay.style.display = "none";
+            startScanner();
+        }, 2000);
+    }
+
+    function handleScan(text) {
         scanner.stop();
 
         const cleaned = text.replace(/\s+/g, " ").trim();
         const parts = cleaned.split("/").map(p => p.trim());
 
         if (parts.length < 3) {
-            alert("Invalid driver QR: " + cleaned);
-            startScanner();
+            showError("Invalid User");
             return;
         }
 
@@ -95,12 +96,26 @@
         };
 
         localStorage.setItem("dfnaUser", JSON.stringify(user));
-
         window.location.href = "/dfna-van-tracker-dev/greeting.html";
     }
 
     window.onload = startScanner;
 </script>
+
+    <div id="errorOverlay" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    z-index: 9999;
+"></div>
 
 </body>
 </html>
