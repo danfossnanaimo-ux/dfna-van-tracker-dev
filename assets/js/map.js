@@ -177,7 +177,7 @@ function init() {
 function fetchAndUpdate(van) {
     dbg("fetchAndUpdate called for van=" + van);
 
-    fetch("/dfna-van-tracker-dev/data/locations.json")
+    fetch("./data/locations.json")
         .then(function (res) {
             dbg("Fetch response status=" + res.status);
             return res.json();
