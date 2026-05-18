@@ -4,7 +4,7 @@
 // ============================================================
 
 // ---------- CONFIG ----------
-const DATA_URL = `/dfna-van-tracker-dev/data/locations.json?v=${Date.now()}`;
+const DATA_URL = `./data/locations.json?v=${Date.now()}`;
 const REFRESH_INTERVAL = 5000; // 5 seconds
 const INITIAL_ZOOM = 17;
 
