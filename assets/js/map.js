@@ -195,7 +195,9 @@ function fetchAndUpdate(van) {
 
             const lat = vanData.gps.latitude;
             const lng = vanData.gps.longitude;
-            const vanNumber = vanData.number || "??";
+
+            // Extract van number from "209 DFNA"
+            const vanNumber = (vanData.name || "").split(" ")[0];
 
             dbg("Van coords: " + lat + ", " + lng);
 
@@ -223,12 +225,12 @@ function fetchAndUpdate(van) {
                     } else {
                         userMarker.setLatLng([uLat, uLng]);
                     }
+
+                    // ALWAYS FIT BOTH USER + VAN
+                    const group = L.featureGroup([vanMarker, userMarker]);
+                    map.fitBounds(group.getBounds(), { padding: [50, 50] });
                 });
             }
-
-            // AUTO-ZOOM to show yard + van
-            const group = L.featureGroup([yardBoundaryLayer, vanMarker]);
-            map.fitBounds(group.getBounds(), { padding: [50, 50] });
 
             dbg("Van marker updated OK");
         })
