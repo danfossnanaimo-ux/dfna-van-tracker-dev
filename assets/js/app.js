@@ -1,6 +1,6 @@
 // ============================================================
-// DFNA VAN TRACKER — OPTIMIZED APP.JS
-// Fast tile loading, smooth animation, stable refresh
+// DFNA VAN TRACKER — STABLE + OPTIMIZED APP.JS
+// Guaranteed map loading, fast tiles, smooth animation
 // ============================================================
 
 // ---------- CONFIG ----------
@@ -18,11 +18,14 @@ let map = L.map("map", {
     preferCanvas: true
 });
 
-// ---------- FASTEST TILE SERVER (CARTO CDN) ----------
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
-}).addTo(map);
+// ---------- STABLE TILE SERVER (GUARANTEED WORKING) ----------
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+    }
+).addTo(map);
 
 // ---------- MARKER STORAGE ----------
 let vanMarkers = {};
@@ -38,12 +41,18 @@ function trackUserLocation() {
             const lng = pos.coords.longitude;
 
             if (!userMarker) {
-                userMarker = L.circleMarker([lat, lng], {
-                    radius: 10,
-                    color: "#00ff00",
-                    fillColor: "#00ff00",
-                    fillOpacity: 0.8
-                }).addTo(map);
+                // Custom pulsing user marker
+                const userIcon = L.divIcon({
+                    className: "user-pulse",
+                    html: `
+                        <div class="pulse-ring"></div>
+                        <div class="inner-dot"></div>
+                    `,
+                    iconSize: [48, 48],
+                    iconAnchor: [24, 24]
+                });
+
+                userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
             } else {
                 userMarker.setLatLng([lat, lng]);
             }
