@@ -26,7 +26,6 @@
             height: 100%;
         }
 
-        /* Optional: top banner showing van + driver */
         #infoBar {
             position: absolute;
             top: 10px;
@@ -36,4 +35,26 @@
             color: white;
             padding: 8px 16px;
             border-radius: 8px;
-            font-size: 16px
+            font-size: 16px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="infoBar">Loading…</div>
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        defer
+    ></script>
+
+    <!-- Your app logic -->
+    <script src="assets/js/app.js" defer></script>
+    <script src="assets/js/map.js" defer></script>
+
+</body>
+</html>
