@@ -55,6 +55,16 @@
     <script src="assets/js/app.js" defer></script>
     <script src="assets/js/map.js" defer></script>
 
+    <script>
+    dbg("index.html: attempting to load map.js…");
+    
+    const testScript = document.createElement("script");
+    testScript.src = "assets/js/map.js?test=" + Date.now();
+    testScript.onload = () => dbg("index.html: map.js LOADED");
+    testScript.onerror = () => dbg("index.html: map.js FAILED TO LOAD");
+    document.body.appendChild(testScript);
+    </script>
+
     <div id="debug" style="
     position: fixed;
     bottom: 0;
