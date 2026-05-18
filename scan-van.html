@@ -77,5 +77,31 @@
     <script src="assets/js/qr-scanner.min.js"></script>
     <script src="assets/js/scan-van.js?v=3"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+
+<script>
+    const video = document.getElementById("video");
+    let scanner;
+
+    async function startScanner() {
+        try {
+            scanner = new QrScanner(video, result => handleScan(result.data), {
+                preferredCamera: "environment"
+            });
+            await scanner.start();
+        } catch (err) {
+            console.error("Camera failed:", err);
+        }
+    }
+
+    function handleScan(text) {
+        const vin = text.trim().toUpperCase();
+        localStorage.setItem("dfnaVIN", vin);
+        window.location.href = "loading.html";
+    }
+
+    window.onload = startScanner;
+</script>
+
 </body>
 </html>
