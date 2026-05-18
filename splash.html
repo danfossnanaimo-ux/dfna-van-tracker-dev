@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DFNA Van Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/dfna-van-tracker-dev/manifest.json">
+<meta name="theme-color" content="#000000">
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/dfna-van-tracker-dev/service-worker.js");
+}
+</script>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: system-ui, sans-serif;
+        color: white;
+    }
+
+    #startBtn {
+        padding: 22px 40px;
+        font-size: 24px;
+        font-weight: 700;
+        border-radius: 14px;
+        border: none;
+        background: white;
+        color: black;
+    }
+</style>
+</head>
+
+<body>
+
+<button id="startBtn">Start Locating Van</button>
+
+<script>
+document.getElementById("startBtn").onclick = () => {
+    window.location.href = "scan-driver.html";
+};
+</script>
+
+</body>
+</html>
