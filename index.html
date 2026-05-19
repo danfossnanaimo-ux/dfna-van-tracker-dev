@@ -73,6 +73,7 @@ let userLng = null;
 
 let vanReady = false;
 let userReady = false;
+let userWatchId = null;
 
 /* ICONS */
 function vanIcon(number) {
@@ -128,7 +129,7 @@ window.addEventListener("load", () => {
 function initMap() {
     const vanVIN = localStorage.getItem("dfnaVIN");
 
-    map = L.map("map", { zoomControl: true, minZoom: 12, maxZoom: 20 });
+    map = L.map("map", { zoomControl: true, minZoom: 5, maxZoom: 20 });
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 20
@@ -141,7 +142,7 @@ function initMap() {
     }).addTo(map);
 
     fetchVanLocation(vanVIN);
-    getUserLocation();
+    startUserWatch();
 }
 
 /* FETCH VAN GPS */
@@ -170,19 +171,19 @@ function fetchVanLocation(vin) {
             }
 
             vanReady = true;
+
+            // Zoom to van immediately
+            map.setView([vanLat, vanLng], 17);
+
             tryFit();
         });
 }
 
-/* GET USER GPS */
-function getUserLocation() {
-    if (!navigator.geolocation) {
-        userReady = false;
-        tryFit();
-        return;
-    }
+/* CONTINUOUS USER GPS */
+function startUserWatch() {
+    if (!navigator.geolocation) return;
 
-    navigator.geolocation.getCurrentPosition(
+    userWatchId = navigator.geolocation.watchPosition(
         pos => {
             userLat = pos.coords.latitude;
             userLng = pos.coords.longitude;
@@ -200,7 +201,8 @@ function getUserLocation() {
             console.log("User GPS failed:", err);
             userReady = false;
             tryFit();
-        }
+        },
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
     );
 }
 
@@ -211,8 +213,6 @@ function tryFit() {
     if (userReady) {
         const group = L.featureGroup([vanMarker, userMarker]);
         map.fitBounds(group.getBounds(), { padding: [50, 50] });
-    } else {
-        map.setView([vanLat, vanLng], 18);
     }
 
     hideLoading();
