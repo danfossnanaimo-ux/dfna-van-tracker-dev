@@ -163,7 +163,22 @@ function fetchAndUpdate(van) {
                 vanMarker.setLatLng([selLat, selLng]);
                 vanMarker.setIcon(vanIcon(selNumber));
             }
-
+            // Add double-tap navigation to Google Maps
+            vanMarker.off("dblclick"); // prevent duplicate bindings
+            vanMarker.on("dblclick", function () {
+                if (!userMarker) return;
+            
+                var u = userMarker.getLatLng();
+                var v = vanMarker.getLatLng();
+            
+                var url =
+                    "https://www.google.com/maps/dir/?api=1" +
+                    "&origin=" + u.lat + "," + u.lng +
+                    "&destination=" + v.lat + "," + v.lng;
+            
+                window.open(url, "_blank");
+            });
+            
             // Plot other vans within 10m at 30% opacity
             locations.forEach(function (v) {
                 if (v.vin === van) return; // skip selected van
