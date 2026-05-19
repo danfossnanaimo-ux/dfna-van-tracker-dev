@@ -6,6 +6,21 @@
 <link rel="manifest" href="/dfna-van-tracker-dev/manifest.json">
 <meta name="theme-color" content="#000000">
 
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    color: white;
+    font-family: system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 28px;
+}
+</style>
+    
 <script>
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/dfna-van-tracker-dev/service-worker.js");
