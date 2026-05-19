@@ -95,7 +95,12 @@ var yardBoundaryCoords = [
 ];
 
 window.addEventListener("load", function () {
+    requestAnimationFrame(() => {
+        requestAnimationFrame(initMap);
+    });
+});
 
+function initMap() {
     var user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
     var driver = user.name || "Unknown";
     var van = localStorage.getItem("dfnaVIN");
@@ -116,7 +121,7 @@ window.addEventListener("load", function () {
 
     fetchAndUpdate(van);
     setInterval(function () { fetchAndUpdate(van); }, 10000);
-});
+}
 
 function fetchAndUpdate(van) {
     fetch("/dfna-van-tracker-dev/data/locations.json")
@@ -171,7 +176,7 @@ function fetchAndUpdate(van) {
 
 function updateUserAndFit(vanLat, vanLng) {
     if (!navigator.geolocation) {
-        map.setView([vanLat, vanLng], 16);
+        map.setView([vanLat, vanLng], 18);
         hideLoading();
         return;
     }
@@ -195,7 +200,7 @@ function updateUserAndFit(vanLat, vanLng) {
             hideLoading();
         },
         () => {
-            map.setView([vanLat, vanLng], 16);
+            map.setView([vanLat, vanLng], 18);
             hideLoading();
         }
     );
