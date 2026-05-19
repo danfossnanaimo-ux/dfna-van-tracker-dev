@@ -61,25 +61,20 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-/* ---------------------------------------------------------
-   GLOBAL STATE
---------------------------------------------------------- */
 let map;
 let vanMarker = null;
 let userMarker = null;
 let yardBoundaryLayer = null;
-
-let vanReady = false;
-let userReady = false;
 
 let vanLat = null;
 let vanLng = null;
 let userLat = null;
 let userLng = null;
 
-/* ---------------------------------------------------------
-   ICONS
---------------------------------------------------------- */
+let vanReady = false;
+let userReady = false;
+
+/* ICONS */
 function vanIcon(number) {
     return L.divIcon({
         html:
@@ -111,9 +106,7 @@ function userIcon() {
     });
 }
 
-/* ---------------------------------------------------------
-   YARD BOUNDARY
---------------------------------------------------------- */
+/* YARD BOUNDARY */
 const yardBoundaryCoords = [
     [49.04099970424841, -123.86796072616107],
     [49.04104856987419, -123.8678059019293],
@@ -125,9 +118,7 @@ const yardBoundaryCoords = [
     [49.04099970424841, -123.86796072616107]
 ];
 
-/* ---------------------------------------------------------
-   INIT MAP (NO INITIAL ZOOM)
---------------------------------------------------------- */
+/* INIT MAP */
 window.addEventListener("load", () => {
     requestAnimationFrame(() => {
         requestAnimationFrame(initMap);
@@ -149,15 +140,11 @@ function initMap() {
         fillOpacity: 0.15
     }).addTo(map);
 
-    // ⭐ NO initial zoom here
-
     fetchVanLocation(vanVIN);
     getUserLocation();
 }
 
-/* ---------------------------------------------------------
-   FETCH VAN GPS
---------------------------------------------------------- */
+/* FETCH VAN GPS */
 function fetchVanLocation(vin) {
     fetch("/dfna-van-tracker-dev/data/locations.json")
         .then(res => res.json())
@@ -183,20 +170,17 @@ function fetchVanLocation(vin) {
             }
 
             vanReady = true;
-            tryFitBoth();
-        })
-        .catch(err => {
-            console.error("JSON fetch error:", err);
-            alert("Unable to load van data");
-            window.location.href = "scan-van.html";
+            tryFit();
         });
 }
 
-/* ---------------------------------------------------------
-   GET USER GPS
---------------------------------------------------------- */
+/* GET USER GPS */
 function getUserLocation() {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+        userReady = false;
+        tryFit();
+        return;
+    }
 
     navigator.geolocation.getCurrentPosition(
         pos => {
@@ -210,29 +194,31 @@ function getUserLocation() {
             }
 
             userReady = true;
-            tryFitBoth();
+            tryFit();
         },
         err => {
-            console.log("Geolocation error:", err);
+            console.log("User GPS failed:", err);
+            userReady = false;
+            tryFit();
         }
     );
 }
 
-/* ---------------------------------------------------------
-   FIT BOTH MARKERS WHEN BOTH ARE READY
---------------------------------------------------------- */
-function tryFitBoth() {
-    if (!vanReady || !userReady) return;
+/* FIT LOGIC */
+function tryFit() {
+    if (!vanReady) return;
 
-    const group = L.featureGroup([vanMarker, userMarker]);
-    map.fitBounds(group.getBounds(), { padding: [50, 50] });
+    if (userReady) {
+        const group = L.featureGroup([vanMarker, userMarker]);
+        map.fitBounds(group.getBounds(), { padding: [50, 50] });
+    } else {
+        map.setView([vanLat, vanLng], 18);
+    }
 
     hideLoading();
 }
 
-/* ---------------------------------------------------------
-   NAVIGATION BUTTON
---------------------------------------------------------- */
+/* NAVIGATION BUTTON */
 function openNavigation() {
     if (!userMarker || !vanMarker) return;
 
