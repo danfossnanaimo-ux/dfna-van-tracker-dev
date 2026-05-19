@@ -171,7 +171,7 @@ function fetchAndUpdate(van) {
 
 function updateUserAndFit(vanLat, vanLng) {
     if (!navigator.geolocation) {
-        map.setView([vanLat, vanLng], 17);
+        map.setView([vanLat, vanLng], 16);
         hideLoading();
         return;
     }
@@ -189,13 +189,13 @@ function updateUserAndFit(vanLat, vanLng) {
 
             if (vanMarker && userMarker) {
                 var group = L.featureGroup([vanMarker, userMarker]);
-                map.fitBounds(group.getBounds(), { padding: [1, 1] });
+                map.fitBounds(group.getBounds(), { padding: [50, 50] });
             }
 
             hideLoading();
         },
         () => {
-            map.setView([vanLat, vanLng], 17);
+            map.setView([vanLat, vanLng], 16);
             hideLoading();
         }
     );
