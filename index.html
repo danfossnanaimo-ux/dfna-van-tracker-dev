@@ -22,7 +22,6 @@
             height: 100%;
         }
 
-        /* Optional loading overlay */
         #loading {
             position: absolute;
             top: 10px;
@@ -43,31 +42,20 @@
 <div id="loading">Loading…</div>
 <div id="map"></div>
 
-<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- INLINE APP LOGIC (NO app.js, NO map.js) -->
 <script>
-/* ---------------------------------------------------------
-   GLOBALS
---------------------------------------------------------- */
 var allVanMarkers = [];
 var map;
 var vanMarker;
 var userMarker;
 var yardBoundaryLayer;
 
-/* ---------------------------------------------------------
-   UI CLEANUP
---------------------------------------------------------- */
 function hideLoading() {
     var loading = document.getElementById("loading");
     if (loading) loading.style.display = "none";
 }
 
-/* ---------------------------------------------------------
-   CUSTOM MARKERS
---------------------------------------------------------- */
 function vanIcon(number) {
     var html =
         '<div style="' +
@@ -95,9 +83,6 @@ function userIcon() {
     return L.divIcon({ html: html, className: "", iconSize: [34, 34] });
 }
 
-/* ---------------------------------------------------------
-   YARD BOUNDARY
---------------------------------------------------------- */
 var yardBoundaryCoords = [
     [49.04099970424841, -123.86796072616107],
     [49.04104856987419, -123.8678059019293],
@@ -109,22 +94,13 @@ var yardBoundaryCoords = [
     [49.04099970424841, -123.86796072616107]
 ];
 
-/* ---------------------------------------------------------
-   INIT
---------------------------------------------------------- */
 window.addEventListener("load", function () {
 
     var user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
     var driver = user.name || "Unknown";
     var van = localStorage.getItem("dfnaVIN");
 
-    map = L.map("map", { 
-    zoomControl: true,
-    minZoom: 12,
-    maxZoom: 20,
-    doubleClickZoom: false,
-    tap: false
-    });
+    map = L.map("map", { zoomControl: true, minZoom: 12, maxZoom: 20 });
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 20
@@ -142,52 +118,30 @@ window.addEventListener("load", function () {
     setInterval(function () { fetchAndUpdate(van); }, 10000);
 });
 
-/* ---------------------------------------------------------
-   FETCH + UPDATE MARKERS
---------------------------------------------------------- */
 function fetchAndUpdate(van) {
     fetch("/dfna-van-tracker-dev/data/locations.json")
-        .then(function (res) { return res.json(); })
-        .then(function (locations) {
+        .then(res => res.json())
+        .then(locations => {
 
-            // Clear old nearby van markers
-            allVanMarkers.forEach(function (m) { map.removeLayer(m); });
+            allVanMarkers.forEach(m => map.removeLayer(m));
             allVanMarkers = [];
 
-            // Find the selected van by VIN
-            var selectedVanData = locations.find(function (v) { return v.vin === van; });
+            var selectedVanData = locations.find(v => v.vin === van);
             if (!selectedVanData) return;
 
             var selLat = selectedVanData.gps.latitude;
             var selLng = selectedVanData.gps.longitude;
             var selNumber = (selectedVanData.name || "").split(" ")[0] || "??";
 
-            // Selected van marker (full opacity)
             if (!vanMarker) {
                 vanMarker = L.marker([selLat, selLng], { icon: vanIcon(selNumber) }).addTo(map);
             } else {
                 vanMarker.setLatLng([selLat, selLng]);
                 vanMarker.setIcon(vanIcon(selNumber));
             }
-            // Add double-tap navigation to Google Maps
-            vanMarker.off("dblclick"); // prevent duplicate bindings
-            vanMarker.on("dblclick", function () {
-                if (!userMarker) return;
-            
-                var u = userMarker.getLatLng();
-                var v = vanMarker.getLatLng();
-            
-                var url =
-                    "https://www.google.com/maps/dir/?api=1" +
-                    "&origin=" + u.lat + "," + u.lng +
-                    "&destination=" + v.lat + "," + v.lng;
-            
-                window.open(url, "_blank");
-            });
-            
-            // Plot other vans within 10m at 30% opacity
-            locations.forEach(function (v) {
-                if (v.vin === van) return; // skip selected van
+
+            locations.forEach(v => {
+                if (v.vin === van) return;
 
                 var lat = v.gps.latitude;
                 var lng = v.gps.longitude;
@@ -215,9 +169,6 @@ function fetchAndUpdate(van) {
         });
 }
 
-/* ---------------------------------------------------------
-   USER + AUTO-FIT BOTH MARKERS
---------------------------------------------------------- */
 function updateUserAndFit(vanLat, vanLng) {
     if (!navigator.geolocation) {
         map.setView([vanLat, vanLng], 18);
@@ -226,7 +177,7 @@ function updateUserAndFit(vanLat, vanLng) {
     }
 
     navigator.geolocation.getCurrentPosition(
-        function (pos) {
+        pos => {
             var uLat = pos.coords.latitude;
             var uLng = pos.coords.longitude;
 
@@ -237,27 +188,13 @@ function updateUserAndFit(vanLat, vanLng) {
             }
 
             if (vanMarker && userMarker) {
-            var group = L.featureGroup([vanMarker, userMarker]);
-            var bounds = group.getBounds();
-        
-            // Fit both markers
-            map.fitBounds(bounds, { padding: [50, 50] });
-        
-            // Force one zoom level closer AFTER fitBounds finishes
-            map.once("moveend", function () {
-            setTimeout(function () {
-                if (map.getBounds().contains(vanMarker.getLatLng()) &&
-                    map.getBounds().contains(userMarker.getLatLng())) {
-                    map.setZoom(map.getZoom() + 1);
-                }
-            }, 50); // small delay fixes iPhone rendering lag
-            });
-
-        }
+                var group = L.featureGroup([vanMarker, userMarker]);
+                map.fitBounds(group.getBounds(), { padding: [50, 50] });
+            }
 
             hideLoading();
         },
-        function () {
+        () => {
             map.setView([vanLat, vanLng], 18);
             hideLoading();
         }
