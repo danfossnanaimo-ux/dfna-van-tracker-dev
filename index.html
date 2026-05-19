@@ -189,7 +189,7 @@ function updateUserAndFit(vanLat, vanLng) {
 
             if (vanMarker && userMarker) {
                 var group = L.featureGroup([vanMarker, userMarker]);
-                map.fitBounds(group.getBounds(), { padding: [50, 50] });
+                map.fitBounds(group.getBounds(), { padding: [100, 100] });
             }
 
             hideLoading();
