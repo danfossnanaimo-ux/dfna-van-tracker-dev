@@ -34,6 +34,22 @@
             font-size: 14px;
             z-index: 9999;
         }
+
+        /* Navigation button */
+        #navButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 9999;
+        }
     </style>
 </head>
 
@@ -41,6 +57,9 @@
 
 <div id="loading">Loading…</div>
 <div id="map"></div>
+
+<!-- Navigation button -->
+<button id="navButton" onclick="openNavigation()">🧭</button>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -51,38 +70,43 @@ var vanMarker;
 var userMarker;
 var yardBoundaryLayer;
 
-function hideLoading() {
-    var loading = document.getElementById("loading");
-    if (loading) loading.style.display = "none";
-}
-
+/* ---------------------------------------------------------
+   ICONS
+--------------------------------------------------------- */
 function vanIcon(number) {
-    var html =
-        '<div style="' +
-            'width:34px;height:34px;border-radius:50%;' +
-            'background:#1976d2;color:white;font-weight:bold;' +
-            'display:flex;align-items:center;justify-content:center;' +
-            'font-size:14px;border:2px solid white;' +
-            'box-shadow:0 0 6px rgba(0,0,0,0.4);' +
-        '">' + number + '</div>';
-
-    return L.divIcon({ html: html, className: "", iconSize: [34, 34] });
+    return L.divIcon({
+        html:
+            '<div style="' +
+                'width:34px;height:34px;border-radius:50%;' +
+                'background:#1976d2;color:white;font-weight:bold;' +
+                'display:flex;align-items:center;justify-content:center;' +
+                'font-size:14px;border:2px solid white;' +
+                'box-shadow:0 0 6px rgba(0,0,0,0.4);' +
+            '">' + number + '</div>',
+        className: "",
+        iconSize: [34, 34]
+    });
 }
 
 function userIcon() {
-    var html =
-        '<div style="position:relative;width:34px;height:34px;">' +
-            '<div style="' +
-                'position:absolute;top:50%;left:50%;' +
-                'width:20px;height:20px;background:#00e676;' +
-                'border-radius:50%;transform:translate(-50%,-50%);' +
-                'box-shadow:0 0 12px rgba(0,230,118,0.9);' +
-            '"></div>' +
-        '</div>';
-
-    return L.divIcon({ html: html, className: "", iconSize: [34, 34] });
+    return L.divIcon({
+        html:
+            '<div style="position:relative;width:34px;height:34px;">' +
+                '<div style="' +
+                    'position:absolute;top:50%;left:50%;' +
+                    'width:20px;height:20px;background:#00e676;' +
+                    'border-radius:50%;transform:translate(-50%,-50%);' +
+                    'box-shadow:0 0 12px rgba(0,230,118,0.9);' +
+                '"></div>' +
+            '</div>',
+        className: "",
+        iconSize: [34, 34]
+    });
 }
 
+/* ---------------------------------------------------------
+   YARD BOUNDARY
+--------------------------------------------------------- */
 var yardBoundaryCoords = [
     [49.04099970424841, -123.86796072616107],
     [49.04104856987419, -123.8678059019293],
@@ -94,16 +118,18 @@ var yardBoundaryCoords = [
     [49.04099970424841, -123.86796072616107]
 ];
 
-window.addEventListener("load", function () {
+/* ---------------------------------------------------------
+   INIT (DELAYED TO FIX iPHONE MAP SIZE BUG)
+--------------------------------------------------------- */
+window.addEventListener("load", () => {
     requestAnimationFrame(() => {
         requestAnimationFrame(initMap);
     });
 });
 
 function initMap() {
-    var user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
-    var driver = user.name || "Unknown";
-    var van = localStorage.getItem("dfnaVIN");
+    const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
+    const van = localStorage.getItem("dfnaVIN");
 
     map = L.map("map", { zoomControl: true, minZoom: 12, maxZoom: 20 });
 
@@ -120,9 +146,12 @@ function initMap() {
     map.fitBounds(yardBoundaryLayer.getBounds());
 
     fetchAndUpdate(van);
-    setInterval(function () { fetchAndUpdate(van); }, 10000);
+    setInterval(() => fetchAndUpdate(van), 10000);
 }
 
+/* ---------------------------------------------------------
+   FETCH + UPDATE MARKERS
+--------------------------------------------------------- */
 function fetchAndUpdate(van) {
     fetch("/dfna-van-tracker-dev/data/locations.json")
         .then(res => res.json())
@@ -131,12 +160,12 @@ function fetchAndUpdate(van) {
             allVanMarkers.forEach(m => map.removeLayer(m));
             allVanMarkers = [];
 
-            var selectedVanData = locations.find(v => v.vin === van);
+            const selectedVanData = locations.find(v => v.vin === van);
             if (!selectedVanData) return;
 
-            var selLat = selectedVanData.gps.latitude;
-            var selLng = selectedVanData.gps.longitude;
-            var selNumber = (selectedVanData.name || "").split(" ")[0] || "??";
+            const selLat = selectedVanData.gps.latitude;
+            const selLng = selectedVanData.gps.longitude;
+            const selNumber = (selectedVanData.name || "").split(" ")[0] || "??";
 
             if (!vanMarker) {
                 vanMarker = L.marker([selLat, selLng], { icon: vanIcon(selNumber) }).addTo(map);
@@ -148,24 +177,27 @@ function fetchAndUpdate(van) {
             locations.forEach(v => {
                 if (v.vin === van) return;
 
-                var lat = v.gps.latitude;
-                var lng = v.gps.longitude;
-                var num = (v.name || "").split(" ")[0] || "??";
+                const lat = v.gps.latitude;
+                const lng = v.gps.longitude;
+                const num = (v.name || "").split(" ")[0] || "??";
 
-                var dist = map.distance([selLat, selLng], [lat, lng]);
+                const dist = map.distance([selLat, selLng], [lat, lng]);
 
                 if (dist <= 10) {
-                    var iconHtml =
-                        '<div style="' +
-                            'width:34px;height:34px;border-radius:50%;' +
-                            'background:#1976d2;color:white;font-weight:bold;' +
-                            'display:flex;align-items:center;justify-content:center;' +
-                            'font-size:14px;border:2px solid white;' +
-                            'opacity:0.3;' +
-                        '">' + num + '</div>';
+                    const icon = L.divIcon({
+                        html:
+                            '<div style="' +
+                                'width:34px;height:34px;border-radius:50%;' +
+                                'background:#1976d2;color:white;font-weight:bold;' +
+                                'display:flex;align-items:center;justify-content:center;' +
+                                'font-size:14px;border:2px solid white;' +
+                                'opacity:0.3;' +
+                            '">' + num + '</div>',
+                        className: "",
+                        iconSize: [34, 34]
+                    });
 
-                    var icon = L.divIcon({ html: iconHtml, className: "", iconSize: [34, 34] });
-                    var m = L.marker([lat, lng], { icon: icon }).addTo(map);
+                    const m = L.marker([lat, lng], { icon }).addTo(map);
                     allVanMarkers.push(m);
                 }
             });
@@ -174,17 +206,19 @@ function fetchAndUpdate(van) {
         });
 }
 
+/* ---------------------------------------------------------
+   USER + AUTO-FIT (DELAYED TO FIX iPHONE GEO BUG)
+--------------------------------------------------------- */
 function updateUserAndFit(vanLat, vanLng) {
     if (!navigator.geolocation) {
         map.setView([vanLat, vanLng], 18);
-        hideLoading();
         return;
     }
 
     navigator.geolocation.getCurrentPosition(
         pos => {
-            var uLat = pos.coords.latitude;
-            var uLng = pos.coords.longitude;
+            const uLat = pos.coords.latitude;
+            const uLng = pos.coords.longitude;
 
             if (!userMarker) {
                 userMarker = L.marker([uLat, uLng], { icon: userIcon() }).addTo(map);
@@ -193,17 +227,35 @@ function updateUserAndFit(vanLat, vanLng) {
             }
 
             if (vanMarker && userMarker) {
-                var group = L.featureGroup([vanMarker, userMarker]);
-                map.fitBounds(group.getBounds(), { padding: [50, 50] });
-            }
+                const group = L.featureGroup([vanMarker, userMarker]);
 
-            hideLoading();
+                // ⭐ FIX: Delay fitBounds so both markers exist before fitting
+                setTimeout(() => {
+                    map.fitBounds(group.getBounds(), { padding: [50, 50] });
+                }, 50);
+            }
         },
         () => {
             map.setView([vanLat, vanLng], 18);
-            hideLoading();
         }
     );
+}
+
+/* ---------------------------------------------------------
+   NAVIGATION BUTTON
+--------------------------------------------------------- */
+function openNavigation() {
+    if (!userMarker || !vanMarker) return;
+
+    const u = userMarker.getLatLng();
+    const v = vanMarker.getLatLng();
+
+    const url =
+        "https://www.google.com/maps/dir/?api=1" +
+        "&origin=" + u.lat + "," + u.lng +
+        "&destination=" + v.lat + "," + v.lng;
+
+    window.open(url, "_blank");
 }
 </script>
 
