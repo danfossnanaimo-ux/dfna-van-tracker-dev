@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DFNA Van Tracker</title>
 
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
     <style>
@@ -35,7 +34,6 @@
             z-index: 9999;
         }
 
-        /* Navigation button */
         #navButton {
             position: absolute;
             top: 10px;
@@ -58,17 +56,26 @@
 <div id="loading">Loading…</div>
 <div id="map"></div>
 
-<!-- Navigation button -->
 <button id="navButton" onclick="openNavigation()">🧭</button>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-var allVanMarkers = [];
-var map;
-var vanMarker;
-var userMarker;
-var yardBoundaryLayer;
+/* ---------------------------------------------------------
+   GLOBAL STATE
+--------------------------------------------------------- */
+let map;
+let vanMarker = null;
+let userMarker = null;
+let yardBoundaryLayer = null;
+
+let vanReady = false;
+let userReady = false;
+
+let vanLat = null;
+let vanLng = null;
+let userLat = null;
+let userLng = null;
 
 /* ---------------------------------------------------------
    ICONS
@@ -107,7 +114,7 @@ function userIcon() {
 /* ---------------------------------------------------------
    YARD BOUNDARY
 --------------------------------------------------------- */
-var yardBoundaryCoords = [
+const yardBoundaryCoords = [
     [49.04099970424841, -123.86796072616107],
     [49.04104856987419, -123.8678059019293],
     [49.041067364333145, -123.865328714224],
@@ -119,7 +126,7 @@ var yardBoundaryCoords = [
 ];
 
 /* ---------------------------------------------------------
-   INIT (DELAYED TO FIX iPHONE MAP SIZE BUG)
+   INIT MAP (NO INITIAL ZOOM)
 --------------------------------------------------------- */
 window.addEventListener("load", () => {
     requestAnimationFrame(() => {
@@ -128,8 +135,7 @@ window.addEventListener("load", () => {
 });
 
 function initMap() {
-    const user = JSON.parse(localStorage.getItem("dfnaUser") || "{}");
-    const van = localStorage.getItem("dfnaVIN");
+    const vanVIN = localStorage.getItem("dfnaVIN");
 
     map = L.map("map", { zoomControl: true, minZoom: 12, maxZoom: 20 });
 
@@ -143,106 +149,85 @@ function initMap() {
         fillOpacity: 0.15
     }).addTo(map);
 
-    map.fitBounds(yardBoundaryLayer.getBounds());
+    // ⭐ NO initial zoom here
 
-    fetchAndUpdate(van);
-    setInterval(() => fetchAndUpdate(van), 10000);
+    fetchVanLocation(vanVIN);
+    getUserLocation();
 }
 
 /* ---------------------------------------------------------
-   FETCH + UPDATE MARKERS
+   FETCH VAN GPS
 --------------------------------------------------------- */
-function fetchAndUpdate(van) {
+function fetchVanLocation(vin) {
     fetch("/dfna-van-tracker-dev/data/locations.json")
         .then(res => res.json())
         .then(locations => {
 
-            allVanMarkers.forEach(m => map.removeLayer(m));
-            allVanMarkers = [];
+            const van = locations.find(v => v.vin === vin);
 
-            const selectedVanData = locations.find(v => v.vin === van);
-            if (!selectedVanData) {
+            if (!van) {
                 alert("Van not found");
                 window.location.href = "scan-van.html";
                 return;
             }
 
-            const selLat = selectedVanData.gps.latitude;
-            const selLng = selectedVanData.gps.longitude;
-            const selNumber = (selectedVanData.name || "").split(" ")[0] || "??";
+            vanLat = van.gps.latitude;
+            vanLng = van.gps.longitude;
+
+            const number = (van.name || "").split(" ")[0] || "??";
 
             if (!vanMarker) {
-                vanMarker = L.marker([selLat, selLng], { icon: vanIcon(selNumber) }).addTo(map);
+                vanMarker = L.marker([vanLat, vanLng], { icon: vanIcon(number) }).addTo(map);
             } else {
-                vanMarker.setLatLng([selLat, selLng]);
-                vanMarker.setIcon(vanIcon(selNumber));
+                vanMarker.setLatLng([vanLat, vanLng]);
             }
 
-            locations.forEach(v => {
-                if (v.vin === van) return;
-
-                const lat = v.gps.latitude;
-                const lng = v.gps.longitude;
-                const num = (v.name || "").split(" ")[0] || "??";
-
-                const dist = map.distance([selLat, selLng], [lat, lng]);
-
-                if (dist <= 10) {
-                    const icon = L.divIcon({
-                        html:
-                            '<div style="' +
-                                'width:34px;height:34px;border-radius:50%;' +
-                                'background:#1976d2;color:white;font-weight:bold;' +
-                                'display:flex;align-items:center;justify-content:center;' +
-                                'font-size:14px;border:2px solid white;' +
-                                'opacity:0.3;' +
-                            '">' + num + '</div>',
-                        className: "",
-                        iconSize: [34, 34]
-                    });
-
-                    const m = L.marker([lat, lng], { icon }).addTo(map);
-                    allVanMarkers.push(m);
-                }
-            });
-
-            updateUserAndFit(selLat, selLng);
+            vanReady = true;
+            tryFitBoth();
+        })
+        .catch(err => {
+            console.error("JSON fetch error:", err);
+            alert("Unable to load van data");
+            window.location.href = "scan-van.html";
         });
 }
 
 /* ---------------------------------------------------------
-   USER + AUTO-FIT (DELAYED TO FIX iPHONE GEO BUG)
+   GET USER GPS
 --------------------------------------------------------- */
-function updateUserAndFit(vanLat, vanLng) {
-    if (!navigator.geolocation) {
-        map.setView([vanLat, vanLng], 18);
-        return;
-    }
+function getUserLocation() {
+    if (!navigator.geolocation) return;
 
     navigator.geolocation.getCurrentPosition(
         pos => {
-            const uLat = pos.coords.latitude;
-            const uLng = pos.coords.longitude;
+            userLat = pos.coords.latitude;
+            userLng = pos.coords.longitude;
 
             if (!userMarker) {
-                userMarker = L.marker([uLat, uLng], { icon: userIcon() }).addTo(map);
+                userMarker = L.marker([userLat, userLng], { icon: userIcon() }).addTo(map);
             } else {
-                userMarker.setLatLng([uLat, uLng]);
+                userMarker.setLatLng([userLat, userLng]);
             }
 
-            if (vanMarker && userMarker) {
-                const group = L.featureGroup([vanMarker, userMarker]);
-
-                // ⭐ FIX: Delay fitBounds so both markers exist before fitting
-                setTimeout(() => {
-                    map.fitBounds(group.getBounds(), { padding: [50, 50] });
-                }, 50);
-            }
+            userReady = true;
+            tryFitBoth();
         },
-        () => {
-            map.setView([vanLat, vanLng], 18);
+        err => {
+            console.log("Geolocation error:", err);
         }
     );
+}
+
+/* ---------------------------------------------------------
+   FIT BOTH MARKERS WHEN BOTH ARE READY
+--------------------------------------------------------- */
+function tryFitBoth() {
+    if (!vanReady || !userReady) return;
+
+    const group = L.featureGroup([vanMarker, userMarker]);
+    map.fitBounds(group.getBounds(), { padding: [50, 50] });
+
+    hideLoading();
 }
 
 /* ---------------------------------------------------------
