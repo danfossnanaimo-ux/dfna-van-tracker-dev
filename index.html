@@ -213,10 +213,14 @@ function tryFit() {
     if (userReady) {
         const group = L.featureGroup([vanMarker, userMarker]);
         map.fitBounds(group.getBounds(), { padding: [50, 50] });
+    } else {
+        // User GPS failed or hasn't arrived yet → zoom to van only
+        map.setView([vanLat, vanLng], 17);
     }
 
     hideLoading();
 }
+
 
 /* NAVIGATION BUTTON */
 function openNavigation() {
