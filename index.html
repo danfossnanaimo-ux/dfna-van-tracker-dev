@@ -237,9 +237,23 @@ function updateUserAndFit(vanLat, vanLng) {
             }
 
             if (vanMarker && userMarker) {
-                var group = L.featureGroup([vanMarker, userMarker]);
-                map.fitBounds(group.getBounds(), { padding: [50, 50] });
-            }
+            var group = L.featureGroup([vanMarker, userMarker]);
+            var bounds = group.getBounds();
+        
+            // Fit both markers
+            map.fitBounds(bounds, { padding: [50, 50] });
+        
+            // Force one zoom level closer AFTER fitBounds finishes
+            map.once("moveend", function () {
+            setTimeout(function () {
+                if (map.getBounds().contains(vanMarker.getLatLng()) &&
+                    map.getBounds().contains(userMarker.getLatLng())) {
+                    map.setZoom(map.getZoom() + 1);
+                }
+            }, 50); // small delay fixes iPhone rendering lag
+            });
+
+        }
 
             hideLoading();
         },
