@@ -221,6 +221,10 @@ function tryFit() {
     hideLoading();
 }
 
+function hideLoading() {
+    const loading = document.getElementById("loading");
+    if (loading) loading.style.display = "none";
+}
 
 /* NAVIGATION BUTTON */
 function openNavigation() {
