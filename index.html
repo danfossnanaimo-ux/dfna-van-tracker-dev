@@ -171,7 +171,7 @@ function fetchAndUpdate(van) {
 
 function updateUserAndFit(vanLat, vanLng) {
     if (!navigator.geolocation) {
-        map.setView([vanLat, vanLng], 18);
+        map.setView([vanLat, vanLng], 17);
         hideLoading();
         return;
     }
@@ -195,7 +195,7 @@ function updateUserAndFit(vanLat, vanLng) {
             hideLoading();
         },
         () => {
-            map.setView([vanLat, vanLng], 18);
+            map.setView([vanLat, vanLng], 17);
             hideLoading();
         }
     );
