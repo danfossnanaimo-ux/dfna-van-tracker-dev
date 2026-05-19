@@ -118,7 +118,13 @@ window.addEventListener("load", function () {
     var driver = user.name || "Unknown";
     var van = localStorage.getItem("dfnaVIN");
 
-    map = L.map("map", { zoomControl: true, minZoom: 12, maxZoom: 20 });
+    map = L.map("map", { 
+    zoomControl: true,
+    minZoom: 12,
+    maxZoom: 20,
+    doubleClickZoom: false,
+    tap: false
+    });
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 20
