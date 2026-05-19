@@ -161,7 +161,11 @@ function fetchAndUpdate(van) {
             allVanMarkers = [];
 
             const selectedVanData = locations.find(v => v.vin === van);
-            if (!selectedVanData) return;
+            if (!selectedVanData) {
+                alert("Van not found");
+                window.location.href = "scan-van.html";
+                return;
+            }
 
             const selLat = selectedVanData.gps.latitude;
             const selLng = selectedVanData.gps.longitude;
