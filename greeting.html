@@ -12,23 +12,7 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
-    <style>
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        width: 100vw;
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: system-ui, sans-serif;
-        color: white;
-        text-align: center;
-    }
-</style>
 </head>
-
 <body>
 
 <script>
@@ -37,13 +21,16 @@ const first = user.name?.split(" ")[0] || "Driver";
 
 document.body.innerHTML = `
     <div style="
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        height:100vh;
-        width:100vw;
-        font-size:28px;
-        text-align:center;
+        margin: 0;
+        padding: 0;
+        background: black;
+        color: white;
+        font-family: system-ui, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-size: 28px;
     ">
         Hello,<br>${first}
     </div>
