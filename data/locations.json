@@ -4,9 +4,9 @@
     "name": "603 DFNA",
     "vin": "1FTBR2C86RKB36694",
     "gps": {
-      "latitude": 49.00758,
-      "longitude": -123.834175,
-      "dateTime": "2026-09-08T04:44:37.887Z"
+      "latitude": 49.1477013,
+      "longitude": -123.951569,
+      "dateTime": "2026-09-08T20:34:50.987Z"
     }
   },
   {
@@ -14,9 +14,9 @@
     "name": "619 DFNA",
     "vin": "1FTBR2X84SKA61042",
     "gps": {
-      "latitude": 49.0402603,
-      "longitude": -123.865883,
-      "dateTime": "2026-09-08T17:23:33.077Z"
+      "latitude": 49.2944069,
+      "longitude": -124.405212,
+      "dateTime": "2026-09-08T20:40:10.000Z"
     }
   },
   {
@@ -34,9 +34,9 @@
     "name": "617 DFNA",
     "vin": "1FTBR2X83SKA61453",
     "gps": {
-      "latitude": 49.0403748,
-      "longitude": -123.866806,
-      "dateTime": "2026-09-08T17:20:52.193Z"
+      "latitude": 49.8146133,
+      "longitude": -125.120682,
+      "dateTime": "2026-09-08T20:31:54.180Z"
     }
   },
   {
@@ -46,7 +46,7 @@
     "gps": {
       "latitude": 49.0404701,
       "longitude": -123.86602,
-      "dateTime": "2026-09-08T17:42:01.797Z"
+      "dateTime": "2026-09-08T20:12:01.093Z"
     }
   },
   {
@@ -60,13 +60,23 @@
     }
   },
   {
+    "id": "b6B1",
+    "name": "536 DFNA",
+    "vin": "1GTW7BFFXH1327573",
+    "gps": {
+      "latitude": 49.1629715,
+      "longitude": -122.972893,
+      "dateTime": "2026-09-07T20:18:11.750Z"
+    }
+  },
+  {
     "id": "b17F",
     "name": "545 DFNA",
     "vin": "1GTW7BFF0H1345287",
     "gps": {
       "latitude": 49.0405464,
       "longitude": -123.865448,
-      "dateTime": "2026-09-07T19:34:31.197Z"
+      "dateTime": "2026-09-08T18:34:44.223Z"
     }
   },
   {
@@ -74,289 +84,9 @@
     "name": "CC 236 DFNA",
     "vin": "1FTBR1C88LKA73597",
     "gps": {
-      "latitude": 49.2520142,
-      "longitude": -124.122536,
-      "dateTime": "2026-09-08T17:44:38.000Z"
-    }
-  },
-  {
-    "id": "b4F5",
-    "name": "610 DFNA",
-    "vin": "1FTBR2Y80PKA44972",
-    "gps": {
-      "latitude": 49.1879997,
-      "longitude": -124.00106,
-      "dateTime": "2026-09-08T17:44:38.290Z"
-    }
-  },
-  {
-    "id": "b1B",
-    "name": "102 DFNA",
-    "vin": "1FTYR2CM5GKB53068",
-    "gps": {
-      "latitude": 49.0402908,
-      "longitude": -123.865654,
-      "dateTime": "2026-09-08T17:29:12.120Z"
-    }
-  },
-  {
-    "id": "b4F3",
-    "name": "611 DFNA",
-    "vin": "1FTBR2Y82PKA61238",
-    "gps": {
-      "latitude": 49.0264549,
-      "longitude": -123.861877,
-      "dateTime": "2026-09-08T17:44:39.000Z"
-    }
-  },
-  {
-    "id": "b4F7",
-    "name": "600 DFNA",
-    "vin": "1FTBR2C80RKB36691",
-    "gps": {
-      "latitude": 49.0225716,
-      "longitude": -123.860542,
-      "dateTime": "2026-09-08T17:44:49.590Z"
-    }
-  },
-  {
-    "id": "b4FC",
-    "name": "601 DFNA",
-    "vin": "1FTBR2C80RKB36643",
-    "gps": {
-      "latitude": 49.0406647,
-      "longitude": -123.865471,
-      "dateTime": "2026-09-08T17:40:55.137Z"
-    }
-  },
-  {
-    "id": "b650",
-    "name": "701 DFNA",
-    "vin": "1FTBR1Y80SKB17552",
-    "gps": {
-      "latitude": 49.2521629,
-      "longitude": -124.117249,
-      "dateTime": "2026-09-08T17:44:53.000Z"
-    }
-  },
-  {
-    "id": "b7A",
-    "name": "47 DFNA",
-    "vin": "1FTYR2XM6HKA32559",
-    "gps": {
-      "latitude": 49.0402946,
-      "longitude": -123.867035,
-      "dateTime": "2026-09-08T17:36:48.783Z"
-    }
-  },
-  {
-    "id": "b419",
-    "name": "533 DFNA",
-    "vin": "1GTW7BFF5H1338156",
-    "gps": {
-      "latitude": 49.0402565,
-      "longitude": -123.865883,
-      "dateTime": "2026-09-08T17:31:22.227Z"
-    }
-  },
-  {
-    "id": "bE1",
-    "name": "505 DFNA",
-    "vin": "1GTW7BFF4H1308338",
-    "gps": {
-      "latitude": 49.0397224,
-      "longitude": -123.866585,
-      "dateTime": "2026-09-08T17:44:57.000Z"
-    }
-  },
-  {
-    "id": "b9B6",
-    "name": "622 DFNA",
-    "vin": "1FTBR2C82SKB17016",
-    "gps": {
-      "latitude": 49.0053329,
-      "longitude": -123.833046,
-      "dateTime": "2026-09-08T17:44:56.147Z"
-    }
-  },
-  {
-    "id": "b853",
-    "name": "564 DFNA",
-    "vin": "1FTYE1ZM4JKA22198",
-    "gps": {
-      "latitude": 49.0062714,
-      "longitude": -123.833664,
-      "dateTime": "2026-09-08T17:44:53.000Z"
-    }
-  },
-  {
-    "id": "b114",
-    "name": "566 DFNA",
-    "vin": "1FTYE1ZM4JKA12304",
-    "gps": {
-      "latitude": 49.0152016,
-      "longitude": -123.853874,
-      "dateTime": "2026-09-08T17:45:02.000Z"
-    }
-  },
-  {
-    "id": "b186",
-    "name": "231 DFNA",
-    "vin": "1FTYR2CM5KKB58425",
-    "gps": {
-      "latitude": 49.0404015,
-      "longitude": -123.866608,
-      "dateTime": "2026-09-08T17:38:20.093Z"
-    }
-  },
-  {
-    "id": "b1A8",
-    "name": "234 DFNA",
-    "vin": "1FTBR1C82LKA37887",
-    "gps": {
-      "latitude": 49.0406685,
-      "longitude": -123.865829,
-      "dateTime": "2026-09-08T17:36:43.793Z"
-    }
-  },
-  {
-    "id": "b480",
-    "name": "587 DFNA",
-    "vin": "1FTBR2CG3RKA36947",
-    "gps": {
-      "latitude": 49.007965,
-      "longitude": -123.834396,
-      "dateTime": "2026-09-08T03:23:03.277Z"
-    }
-  },
-  {
-    "id": "b43C",
-    "name": "252 DFNA",
-    "vin": "1FTBW3U8XPKB34635",
-    "gps": {
-      "latitude": 49.0402412,
-      "longitude": -123.866074,
-      "dateTime": "2026-09-08T17:19:48.320Z"
-    }
-  },
-  {
-    "id": "b9A3",
-    "name": "700 DFNA",
-    "vin": "1FTBR1C80SKA61832",
-    "gps": {
-      "latitude": 49.0050545,
-      "longitude": -123.833527,
-      "dateTime": "2026-09-08T17:43:19.363Z"
-    }
-  },
-  {
-    "id": "b17C",
-    "name": "551 DFNA",
-    "vin": "1GCWGBFP1J1183667",
-    "gps": {
-      "latitude": 49.0563927,
-      "longitude": -123.877449,
-      "dateTime": "2026-09-08T17:45:07.000Z"
-    }
-  },
-  {
-    "id": "b14",
-    "name": "206 DFNA",
-    "vin": "1FTYR2CMXHKB44660",
-    "gps": {
-      "latitude": 49.0404053,
-      "longitude": -123.865715,
-      "dateTime": "2026-09-08T17:20:46.693Z"
-    }
-  },
-  {
-    "id": "b9B8",
-    "name": "703 DFNA",
-    "vin": "1FTBR1Y85SKB17336",
-    "gps": {
-      "latitude": 49.2093735,
-      "longitude": -123.989616,
-      "dateTime": "2026-09-08T17:45:14.000Z"
-    }
-  },
-  {
-    "id": "b9D6",
-    "name": "624 DFNA",
-    "vin": "1FTBR2C85SKB16796",
-    "gps": {
-      "latitude": 49.0394402,
-      "longitude": -123.86628,
-      "dateTime": "2026-09-08T17:45:10.473Z"
-    }
-  },
-  {
-    "id": "b24",
-    "name": "WRC 6133 DFNA",
-    "vin": "1FTNR1YM1FKA70709",
-    "gps": {
-      "latitude": 49.1859665,
-      "longitude": -123.993279,
-      "dateTime": "2026-09-08T17:45:10.000Z"
-    }
-  },
-  {
-    "id": "b9E5",
-    "name": "621 DFNA",
-    "vin": "1FTBR2X86SKA61141",
-    "gps": {
-      "latitude": 49.0404205,
-      "longitude": -123.866768,
-      "dateTime": "2026-09-08T17:23:11.203Z"
-    }
-  },
-  {
-    "id": "b64A",
-    "name": "615 DFNA",
-    "vin": "1FTBR2Y87PKB23748",
-    "gps": {
-      "latitude": 49.0403481,
-      "longitude": -123.867088,
-      "dateTime": "2026-09-08T17:34:56.583Z"
-    }
-  },
-  {
-    "id": "b9B7",
-    "name": "623 DFNA",
-    "vin": "1FTBR2C88SKB16677",
-    "gps": {
-      "latitude": 49.0601959,
-      "longitude": -123.877556,
-      "dateTime": "2026-09-08T17:45:18.000Z"
-    }
-  },
-  {
-    "id": "b40B",
-    "name": "579 DFNA",
-    "vin": "1FTYE2CM4HKA93149",
-    "gps": {
-      "latitude": 49.0162811,
-      "longitude": -123.85582,
-      "dateTime": "2026-09-08T17:45:22.327Z"
-    }
-  },
-  {
-    "id": "b9A2",
-    "name": "702 DFNA",
-    "vin": "1FTBR1C8XSKA79299",
-    "gps": {
-      "latitude": 49.0402107,
-      "longitude": -123.866447,
-      "dateTime": "2026-09-08T17:34:57.240Z"
-    }
-  },
-  {
-    "id": "b4CF",
-    "name": "593 DFNA",
-    "vin": "1FTBR1C8XLKB56819",
-    "gps": {
-      "latitude": 49.0049782,
-      "longitude": -123.832588,
-      "dateTime": "2026-09-08T17:45:19.570Z"
+      "latitude": 49.6692848,
+      "longitude": -124.995445,
+      "dateTime": "2026-09-08T20:41:53.000Z"
     }
   },
   {
@@ -370,13 +100,293 @@
     }
   },
   {
+    "id": "b4F5",
+    "name": "610 DFNA",
+    "vin": "1FTBR2Y80PKA44972",
+    "gps": {
+      "latitude": 49.4446068,
+      "longitude": -124.700203,
+      "dateTime": "2026-09-08T20:40:36.470Z"
+    }
+  },
+  {
+    "id": "b1B",
+    "name": "102 DFNA",
+    "vin": "1FTYR2CM5GKB53068",
+    "gps": {
+      "latitude": 49.7811966,
+      "longitude": -125.141144,
+      "dateTime": "2026-09-08T20:41:46.000Z"
+    }
+  },
+  {
+    "id": "b4F3",
+    "name": "611 DFNA",
+    "vin": "1FTBR2Y82PKA61238",
+    "gps": {
+      "latitude": 49.6782036,
+      "longitude": -124.948631,
+      "dateTime": "2026-09-08T20:41:19.000Z"
+    }
+  },
+  {
+    "id": "b4F7",
+    "name": "600 DFNA",
+    "vin": "1FTBR2C80RKB36691",
+    "gps": {
+      "latitude": 49.7038841,
+      "longitude": -124.867416,
+      "dateTime": "2026-09-08T20:41:33.827Z"
+    }
+  },
+  {
+    "id": "b4FC",
+    "name": "601 DFNA",
+    "vin": "1FTBR2C80RKB36643",
+    "gps": {
+      "latitude": 49.1139603,
+      "longitude": -123.932266,
+      "dateTime": "2026-09-08T20:41:38.797Z"
+    }
+  },
+  {
+    "id": "b650",
+    "name": "701 DFNA",
+    "vin": "1FTBR1Y80SKB17552",
+    "gps": {
+      "latitude": 49.3097839,
+      "longitude": -124.336411,
+      "dateTime": "2026-09-08T20:41:13.077Z"
+    }
+  },
+  {
+    "id": "b7A",
+    "name": "47 DFNA",
+    "vin": "1FTYR2XM6HKA32559",
+    "gps": {
+      "latitude": 49.130455,
+      "longitude": -123.92086,
+      "dateTime": "2026-09-08T20:41:19.233Z"
+    }
+  },
+  {
+    "id": "b419",
+    "name": "533 DFNA",
+    "vin": "1GTW7BFF5H1338156",
+    "gps": {
+      "latitude": 49.3226471,
+      "longitude": -124.41188,
+      "dateTime": "2026-09-08T20:41:53.000Z"
+    }
+  },
+  {
+    "id": "bE1",
+    "name": "505 DFNA",
+    "vin": "1GTW7BFF4H1308338",
+    "gps": {
+      "latitude": 50.0352135,
+      "longitude": -125.246849,
+      "dateTime": "2026-09-08T20:42:03.000Z"
+    }
+  },
+  {
+    "id": "b9B6",
+    "name": "622 DFNA",
+    "vin": "1FTBR2C82SKB17016",
+    "gps": {
+      "latitude": 49.7805977,
+      "longitude": -125.015938,
+      "dateTime": "2026-09-08T20:41:59.183Z"
+    }
+  },
+  {
+    "id": "b853",
+    "name": "564 DFNA",
+    "vin": "1FTYE1ZM4JKA22198",
+    "gps": {
+      "latitude": 49.2406578,
+      "longitude": -124.046516,
+      "dateTime": "2026-09-08T20:42:04.000Z"
+    }
+  },
+  {
+    "id": "b114",
+    "name": "566 DFNA",
+    "vin": "1FTYE1ZM4JKA12304",
+    "gps": {
+      "latitude": 49.7142563,
+      "longitude": -124.972374,
+      "dateTime": "2026-09-08T20:41:09.000Z"
+    }
+  },
+  {
+    "id": "b186",
+    "name": "231 DFNA",
+    "vin": "1FTYR2CM5KKB58425",
+    "gps": {
+      "latitude": 49.0404015,
+      "longitude": -123.866608,
+      "dateTime": "2026-09-08T20:38:20.327Z"
+    }
+  },
+  {
+    "id": "b1A8",
+    "name": "234 DFNA",
+    "vin": "1FTBR1C82LKA37887",
+    "gps": {
+      "latitude": 49.1646271,
+      "longitude": -123.935631,
+      "dateTime": "2026-09-08T20:42:11.000Z"
+    }
+  },
+  {
+    "id": "b480",
+    "name": "587 DFNA",
+    "vin": "1FTBR2CG3RKA36947",
+    "gps": {
+      "latitude": 49.2658119,
+      "longitude": -124.847221,
+      "dateTime": "2026-09-08T20:41:45.977Z"
+    }
+  },
+  {
+    "id": "b43C",
+    "name": "252 DFNA",
+    "vin": "1FTBW3U8XPKB34635",
+    "gps": {
+      "latitude": 49.3159828,
+      "longitude": -124.321754,
+      "dateTime": "2026-09-08T20:40:55.000Z"
+    }
+  },
+  {
+    "id": "b9A3",
+    "name": "700 DFNA",
+    "vin": "1FTBR1C80SKA61832",
+    "gps": {
+      "latitude": 49.2030334,
+      "longitude": -124.00705,
+      "dateTime": "2026-09-08T20:38:05.063Z"
+    }
+  },
+  {
+    "id": "b17C",
+    "name": "551 DFNA",
+    "vin": "1GCWGBFP1J1183667",
+    "gps": {
+      "latitude": 49.6710129,
+      "longitude": -124.906357,
+      "dateTime": "2026-09-08T20:41:25.730Z"
+    }
+  },
+  {
+    "id": "b14",
+    "name": "206 DFNA",
+    "vin": "1FTYR2CMXHKB44660",
+    "gps": {
+      "latitude": 49.6268654,
+      "longitude": -124.989418,
+      "dateTime": "2026-09-08T20:42:09.000Z"
+    }
+  },
+  {
+    "id": "b9B8",
+    "name": "703 DFNA",
+    "vin": "1FTBR1Y85SKB17336",
+    "gps": {
+      "latitude": 49.2140884,
+      "longitude": -124.009033,
+      "dateTime": "2026-09-08T20:41:53.870Z"
+    }
+  },
+  {
+    "id": "b9D6",
+    "name": "624 DFNA",
+    "vin": "1FTBR2C85SKB16796",
+    "gps": {
+      "latitude": 49.3057747,
+      "longitude": -124.199005,
+      "dateTime": "2026-09-08T20:42:20.927Z"
+    }
+  },
+  {
+    "id": "b24",
+    "name": "WRC 6133 DFNA",
+    "vin": "1FTNR1YM1FKA70709",
+    "gps": {
+      "latitude": 49.9899597,
+      "longitude": -125.227837,
+      "dateTime": "2026-09-08T20:41:19.527Z"
+    }
+  },
+  {
+    "id": "b9E5",
+    "name": "621 DFNA",
+    "vin": "1FTBR2X86SKA61141",
+    "gps": {
+      "latitude": 49.3992271,
+      "longitude": -124.622032,
+      "dateTime": "2026-09-08T20:41:17.633Z"
+    }
+  },
+  {
+    "id": "b64A",
+    "name": "615 DFNA",
+    "vin": "1FTBR2Y87PKB23748",
+    "gps": {
+      "latitude": 49.7834663,
+      "longitude": -125.056702,
+      "dateTime": "2026-09-08T20:42:24.957Z"
+    }
+  },
+  {
+    "id": "b9B7",
+    "name": "623 DFNA",
+    "vin": "1FTBR2C88SKB16677",
+    "gps": {
+      "latitude": 49.3156471,
+      "longitude": -124.304642,
+      "dateTime": "2026-09-08T20:42:26.000Z"
+    }
+  },
+  {
+    "id": "b40B",
+    "name": "579 DFNA",
+    "vin": "1FTYE2CM4HKA93149",
+    "gps": {
+      "latitude": 49.1837463,
+      "longitude": -123.978714,
+      "dateTime": "2026-09-08T20:42:29.277Z"
+    }
+  },
+  {
+    "id": "b9A2",
+    "name": "702 DFNA",
+    "vin": "1FTBR1C8XSKA79299",
+    "gps": {
+      "latitude": 49.2510681,
+      "longitude": -124.808624,
+      "dateTime": "2026-09-08T20:42:27.677Z"
+    }
+  },
+  {
+    "id": "b4CF",
+    "name": "593 DFNA",
+    "vin": "1FTBR1C8XLKB56819",
+    "gps": {
+      "latitude": 49.2416458,
+      "longitude": -124.03183,
+      "dateTime": "2026-09-08T20:42:07.000Z"
+    }
+  },
+  {
     "id": "b20A",
     "name": "60 DFNA",
     "vin": "1GCWGBFP4J1181587",
     "gps": {
-      "latitude": 49.0405998,
-      "longitude": -123.865303,
-      "dateTime": "2026-09-08T17:38:20.343Z"
+      "latitude": 49.0403442,
+      "longitude": -123.86602,
+      "dateTime": "2026-09-08T20:41:45.000Z"
     }
   },
   {
@@ -386,7 +396,7 @@
     "gps": {
       "latitude": 49.040596,
       "longitude": -123.865356,
-      "dateTime": "2026-09-08T17:40:19.827Z"
+      "dateTime": "2026-09-08T20:40:18.380Z"
     }
   },
   {
@@ -396,7 +406,7 @@
     "gps": {
       "latitude": 49.1075058,
       "longitude": -123.893402,
-      "dateTime": "2026-09-08T17:27:00.140Z"
+      "dateTime": "2026-09-08T20:27:10.380Z"
     }
   },
   {
@@ -404,9 +414,9 @@
     "name": "589 DFNA",
     "vin": "1FTBR2CG7RKA36935",
     "gps": {
-      "latitude": 49.3171501,
-      "longitude": -124.376617,
-      "dateTime": "2026-09-08T17:44:36.000Z"
+      "latitude": 49.2512856,
+      "longitude": -124.791168,
+      "dateTime": "2026-09-08T18:49:25.090Z"
     }
   },
   {
@@ -424,9 +434,9 @@
     "name": "599 DFNA",
     "vin": "1FTBR2CG4LKA79992",
     "gps": {
-      "latitude": 49.0062637,
-      "longitude": -123.833702,
-      "dateTime": "2026-09-08T17:45:06.553Z"
+      "latitude": 49.1632881,
+      "longitude": -123.938141,
+      "dateTime": "2026-09-08T20:36:21.190Z"
     }
   },
   {
@@ -444,9 +454,9 @@
     "name": "75 DFNA @ Arras auto repair",
     "vin": "1GCWGBFP2J1237591",
     "gps": {
-      "latitude": 48.9999886,
-      "longitude": -123.829414,
-      "dateTime": "2026-09-08T17:27:48.350Z"
+      "latitude": 48.9990234,
+      "longitude": -123.828903,
+      "dateTime": "2026-09-08T20:11:23.493Z"
     }
   },
   {
@@ -484,9 +494,9 @@
     "name": "511 DFNA",
     "vin": "1GTW7AFF4H1210517",
     "gps": {
-      "latitude": 49.2058258,
-      "longitude": -124.034317,
-      "dateTime": "2026-09-08T17:45:31.117Z"
+      "latitude": 49.9972191,
+      "longitude": -125.235268,
+      "dateTime": "2026-09-08T20:42:38.840Z"
     }
   },
   {
@@ -494,9 +504,9 @@
     "name": "507 DFNA",
     "vin": "1GTW7BFFXH1196502",
     "gps": {
-      "latitude": 49.3233147,
-      "longitude": -124.458122,
-      "dateTime": "2026-09-08T17:45:27.000Z"
+      "latitude": 49.9595108,
+      "longitude": -125.217033,
+      "dateTime": "2026-09-08T20:42:44.000Z"
     }
   },
   {
@@ -504,9 +514,9 @@
     "name": "588 DFNA",
     "vin": "1FTBR2CG4RKA37394",
     "gps": {
-      "latitude": 49.0404816,
-      "longitude": -123.866051,
-      "dateTime": "2026-09-08T17:40:22.130Z"
+      "latitude": 49.2791595,
+      "longitude": -124.819572,
+      "dateTime": "2026-09-08T20:34:24.000Z"
     }
   },
   {
@@ -514,9 +524,9 @@
     "name": "559 DFNA",
     "vin": "1GTW7BFF7H1252640",
     "gps": {
-      "latitude": 49.046093,
-      "longitude": -123.873955,
-      "dateTime": "2026-09-08T17:45:27.000Z"
+      "latitude": 49.6827278,
+      "longitude": -124.944191,
+      "dateTime": "2026-09-08T20:42:36.963Z"
     }
   },
   {
@@ -524,9 +534,9 @@
     "name": "618 DFNA",
     "vin": "1FTBR2X81SKA61760",
     "gps": {
-      "latitude": 49.0402145,
-      "longitude": -123.866188,
-      "dateTime": "2026-09-08T17:16:13.410Z"
+      "latitude": 49.8332214,
+      "longitude": -125.12886,
+      "dateTime": "2026-09-08T20:34:35.220Z"
     }
   },
   {
@@ -534,19 +544,9 @@
     "name": "63 DFNA",
     "vin": "1GCWGBFF5H1224173",
     "gps": {
-      "latitude": 49.0405884,
-      "longitude": -123.865425,
-      "dateTime": "2026-09-08T17:16:19.177Z"
-    }
-  },
-  {
-    "id": "b483",
-    "name": "55 DFNA",
-    "vin": "1GCWGBFP3J1236305",
-    "gps": {
-      "latitude": 49.2779083,
-      "longitude": -124.242393,
-      "dateTime": "2026-09-08T17:45:29.090Z"
+      "latitude": 49.0664024,
+      "longitude": -123.895027,
+      "dateTime": "2026-09-08T20:42:35.170Z"
     }
   },
   {
@@ -554,9 +554,19 @@
     "name": "620 DFNA",
     "vin": "1FTBR2C86SKB16953",
     "gps": {
-      "latitude": 49.2058601,
-      "longitude": -124.034462,
-      "dateTime": "2026-09-08T17:45:34.250Z"
+      "latitude": 50.0282898,
+      "longitude": -125.253838,
+      "dateTime": "2026-09-08T20:41:24.170Z"
+    }
+  },
+  {
+    "id": "b483",
+    "name": "55 DFNA",
+    "vin": "1GCWGBFP3J1236305",
+    "gps": {
+      "latitude": 50.0654335,
+      "longitude": -125.275406,
+      "dateTime": "2026-09-08T20:42:53.440Z"
     }
   },
   {
@@ -576,7 +586,17 @@
     "gps": {
       "latitude": 49.040638,
       "longitude": -123.865189,
-      "dateTime": "2026-09-07T21:37:48.777Z"
+      "dateTime": "2026-09-08T20:37:48.383Z"
+    }
+  },
+  {
+    "id": "b91",
+    "name": "202 DFNA - SPARE",
+    "vin": "1FTYR2CM7HKB44664",
+    "gps": {
+      "latitude": 49.3442001,
+      "longitude": -124.459946,
+      "dateTime": "2026-09-08T20:42:51.520Z"
     }
   },
   {
@@ -590,23 +610,13 @@
     }
   },
   {
-    "id": "b91",
-    "name": "202 DFNA - SPARE",
-    "vin": "1FTYR2CM7HKB44664",
-    "gps": {
-      "latitude": 49.0116158,
-      "longitude": -123.841515,
-      "dateTime": "2026-09-08T17:45:47.170Z"
-    }
-  },
-  {
     "id": "bAB",
     "name": "203 DFNA",
     "vin": "1FTYR2CM5HKB44663",
     "gps": {
-      "latitude": 49.0401878,
-      "longitude": -123.866806,
-      "dateTime": "2026-09-08T17:16:43.503Z"
+      "latitude": 49.8049774,
+      "longitude": -125.104881,
+      "dateTime": "2026-09-08T20:38:40.697Z"
     }
   },
   {
@@ -614,9 +624,9 @@
     "name": "606 DFNA",
     "vin": "1FTBR2C80RKB36576",
     "gps": {
-      "latitude": 49.0053329,
-      "longitude": -123.833115,
-      "dateTime": "2026-09-08T17:45:19.757Z"
+      "latitude": 49.6365814,
+      "longitude": -124.946648,
+      "dateTime": "2026-09-08T20:32:24.763Z"
     }
   },
   {
@@ -624,9 +634,9 @@
     "name": "526 DFNA",
     "vin": "1GCWGBFP2J1194256",
     "gps": {
-      "latitude": 49.1881332,
-      "longitude": -124.001511,
-      "dateTime": "2026-09-08T17:45:52.000Z"
+      "latitude": 49.6871452,
+      "longitude": -124.947441,
+      "dateTime": "2026-09-08T20:42:25.000Z"
     }
   },
   {
@@ -644,9 +654,9 @@
     "name": "DFNA 205",
     "vin": "1FTBW2XM0HKB44675",
     "gps": {
-      "latitude": 49.0402603,
-      "longitude": -123.86602,
-      "dateTime": "2026-09-08T17:24:18.247Z"
+      "latitude": 49.3532448,
+      "longitude": -124.451485,
+      "dateTime": "2026-09-08T20:42:57.107Z"
     }
   },
   {
@@ -654,9 +664,9 @@
     "name": "65 DFNA",
     "vin": "1GCWGBFF6H1332995",
     "gps": {
-      "latitude": 48.9868507,
-      "longitude": -123.819176,
-      "dateTime": "2026-09-08T03:04:08.287Z"
+      "latitude": 49.0406227,
+      "longitude": -123.865448,
+      "dateTime": "2026-09-08T19:51:06.390Z"
     }
   },
   {
@@ -674,9 +684,9 @@
     "name": "613 DFNA",
     "vin": "1FTBR2Y87PKA61235",
     "gps": {
-      "latitude": 49.0402794,
-      "longitude": -123.865753,
-      "dateTime": "2026-09-08T17:43:53.403Z"
+      "latitude": 49.0402641,
+      "longitude": -123.865738,
+      "dateTime": "2026-09-08T20:17:46.067Z"
     }
   },
   {
@@ -684,9 +694,9 @@
     "name": "54 DFNA",
     "vin": "1GCWGBFP7J1181762",
     "gps": {
-      "latitude": 49.1074524,
-      "longitude": -123.893135,
-      "dateTime": "2026-09-08T17:45:17.103Z"
+      "latitude": 49.1075287,
+      "longitude": -123.892891,
+      "dateTime": "2026-09-08T20:39:00.307Z"
     }
   },
   {
@@ -694,9 +704,9 @@
     "name": "208 DFNA",
     "vin": "1FTBW2XM4HKB44677",
     "gps": {
-      "latitude": 49.0404205,
-      "longitude": -123.865181,
-      "dateTime": "2026-09-08T17:15:05.180Z"
+      "latitude": 49.1587181,
+      "longitude": -123.956726,
+      "dateTime": "2026-09-08T20:40:44.417Z"
     }
   },
   {
@@ -704,9 +714,9 @@
     "name": "211 DFNA Alert Bay",
     "vin": "1FTYR2CM6HKB44672",
     "gps": {
-      "latitude": 49.0404205,
-      "longitude": -123.865852,
-      "dateTime": "2026-09-08T17:43:51.577Z"
+      "latitude": 49.9719925,
+      "longitude": -125.241776,
+      "dateTime": "2026-09-08T20:42:34.673Z"
     }
   },
   {
@@ -716,7 +726,7 @@
     "gps": {
       "latitude": 48.9984779,
       "longitude": -123.820107,
-      "dateTime": "2026-09-08T17:22:06.160Z"
+      "dateTime": "2026-09-08T20:22:13.830Z"
     }
   },
   {
@@ -724,9 +734,9 @@
     "name": "577 DFNA",
     "vin": "1GTW7AFGXJ1325525",
     "gps": {
-      "latitude": 49.2682877,
-      "longitude": -124.226303,
-      "dateTime": "2026-09-08T17:45:52.000Z"
+      "latitude": 50.0245934,
+      "longitude": -125.255119,
+      "dateTime": "2026-09-08T20:43:01.000Z"
     }
   },
   {
@@ -744,9 +754,9 @@
     "name": "594 DFNA",
     "vin": "1FTBR1CG7PKA58604",
     "gps": {
-      "latitude": 49.3065529,
-      "longitude": -124.487999,
-      "dateTime": "2026-09-08T17:46:01.000Z"
+      "latitude": 49.2314148,
+      "longitude": -124.801384,
+      "dateTime": "2026-09-08T20:43:08.410Z"
     }
   },
   {
@@ -756,7 +766,7 @@
     "gps": {
       "latitude": 49.0406914,
       "longitude": -123.865128,
-      "dateTime": "2026-09-08T17:22:06.910Z"
+      "dateTime": "2026-09-08T20:22:10.773Z"
     }
   },
   {
@@ -764,9 +774,9 @@
     "name": "595 DFNA",
     "vin": "1FTYR2XM3KKA72606",
     "gps": {
-      "latitude": 49.0402565,
-      "longitude": -123.865959,
-      "dateTime": "2026-09-08T17:23:34.337Z"
+      "latitude": 49.1918068,
+      "longitude": -123.971443,
+      "dateTime": "2026-09-08T20:43:15.000Z"
     }
   },
   {
@@ -774,9 +784,9 @@
     "name": "66 DFNA",
     "vin": "1GCWGBFF1H1336520",
     "gps": {
-      "latitude": 49.0404091,
-      "longitude": -123.866455,
-      "dateTime": "2026-09-08T17:22:53.447Z"
+      "latitude": 49.9746323,
+      "longitude": -125.240746,
+      "dateTime": "2026-09-08T20:43:04.000Z"
     }
   },
   {
@@ -784,9 +794,9 @@
     "name": "598 DFNA",
     "vin": "1FTYR2CM4KKB88211",
     "gps": {
-      "latitude": 49.04039,
-      "longitude": -123.866882,
-      "dateTime": "2026-09-08T17:44:00.270Z"
+      "latitude": 49.341568,
+      "longitude": -124.390274,
+      "dateTime": "2026-09-08T20:43:13.000Z"
     }
   },
   {
@@ -794,9 +804,9 @@
     "name": "607 DFNA",
     "vin": "1FTBR2C88RKB36373",
     "gps": {
-      "latitude": 49.0115166,
-      "longitude": -123.840462,
-      "dateTime": "2026-09-08T17:43:21.557Z"
+      "latitude": 49.1061401,
+      "longitude": -123.858574,
+      "dateTime": "2026-09-08T20:42:59.057Z"
     }
   },
   {
@@ -806,7 +816,7 @@
     "gps": {
       "latitude": 49.0404434,
       "longitude": -123.866333,
-      "dateTime": "2026-09-08T17:42:41.493Z"
+      "dateTime": "2026-09-08T20:42:40.253Z"
     }
   },
   {
@@ -814,9 +824,9 @@
     "name": "605 DFNA",
     "vin": "1FTBR2C80RKB36433",
     "gps": {
-      "latitude": 49.2112083,
-      "longitude": -123.946869,
-      "dateTime": "2026-09-08T17:46:12.810Z"
+      "latitude": 49.2268867,
+      "longitude": -123.952782,
+      "dateTime": "2026-09-08T20:43:10.533Z"
     }
   },
   {
@@ -826,7 +836,7 @@
     "gps": {
       "latitude": 49.2616234,
       "longitude": -122.983017,
-      "dateTime": "2026-09-08T17:28:56.813Z"
+      "dateTime": "2026-09-08T20:14:57.697Z"
     }
   },
   {
@@ -846,7 +856,7 @@
     "gps": {
       "latitude": 49.0402985,
       "longitude": -123.866844,
-      "dateTime": "2026-09-08T17:24:08.470Z"
+      "dateTime": "2026-09-08T20:24:14.170Z"
     }
   },
   {
@@ -854,9 +864,9 @@
     "name": "52 DFNA",
     "vin": "1GCWGBFF5H1319414",
     "gps": {
-      "latitude": 49.206543,
-      "longitude": -122.871582,
-      "dateTime": "2026-09-08T17:45:00.720Z"
+      "latitude": 49.2066612,
+      "longitude": -122.871544,
+      "dateTime": "2026-09-08T20:20:35.340Z"
     }
   },
   {
@@ -864,9 +874,9 @@
     "name": "DFNA - 59",
     "vin": "1GCWGBFF9H1342260",
     "gps": {
-      "latitude": 49.0407028,
-      "longitude": -123.865448,
-      "dateTime": "2026-09-08T17:34:08.737Z"
+      "latitude": 48.9999123,
+      "longitude": -123.829033,
+      "dateTime": "2026-09-08T20:32:53.820Z"
     }
   },
   {
@@ -874,9 +884,9 @@
     "name": "225 DFNA",
     "vin": "1FTBW2XM2KKA44861",
     "gps": {
-      "latitude": 49.0937424,
-      "longitude": -123.885872,
-      "dateTime": "2026-09-08T17:46:19.000Z"
+      "latitude": 49.1949615,
+      "longitude": -124.04792,
+      "dateTime": "2026-09-08T20:42:19.000Z"
     }
   },
   {
@@ -894,9 +904,9 @@
     "name": "523 DFNA",
     "vin": "1GCWGBFP6J1315628",
     "gps": {
-      "latitude": 49.205677,
-      "longitude": -124.033752,
-      "dateTime": "2026-09-08T17:45:48.890Z"
+      "latitude": 49.6994858,
+      "longitude": -124.985397,
+      "dateTime": "2026-09-08T20:43:28.583Z"
     }
   },
   {
@@ -914,9 +924,9 @@
     "name": "614 DFNA",
     "vin": "1FTBR2Y87PKA61249",
     "gps": {
-      "latitude": 49.0402298,
-      "longitude": -123.866623,
-      "dateTime": "2026-09-08T17:46:09.157Z"
+      "latitude": 49.2647209,
+      "longitude": -124.794014,
+      "dateTime": "2026-09-08T20:42:12.290Z"
     }
   },
   {
@@ -924,19 +934,9 @@
     "name": "532 DFNA",
     "vin": "1GCWGBFP0J1269682",
     "gps": {
-      "latitude": 49.2555618,
-      "longitude": -124.218689,
-      "dateTime": "2026-09-08T17:35:15.723Z"
-    }
-  },
-  {
-    "id": "b6B1",
-    "name": "536 DFNA",
-    "vin": "1GTW7BFFXH1327573",
-    "gps": {
-      "latitude": 49.1629715,
-      "longitude": -122.972893,
-      "dateTime": "2026-09-07T20:18:11.750Z"
+      "latitude": 49.0402946,
+      "longitude": -123.865692,
+      "dateTime": "2026-09-08T20:21:19.547Z"
     }
   },
   {
@@ -944,9 +944,9 @@
     "name": "612 DFNA",
     "vin": "1FTBR2Y87PKA44709",
     "gps": {
-      "latitude": 49.0050812,
-      "longitude": -123.832893,
-      "dateTime": "2026-09-08T17:46:11.533Z"
+      "latitude": 49.7620239,
+      "longitude": -125.041405,
+      "dateTime": "2026-09-08T20:42:58.000Z"
     }
   },
   {
@@ -954,9 +954,9 @@
     "name": "580 DFNA",
     "vin": "1FTYR2CM5KKB88170",
     "gps": {
-      "latitude": 49.0052528,
-      "longitude": -123.833115,
-      "dateTime": "2026-09-08T17:45:47.837Z"
+      "latitude": 49.3735886,
+      "longitude": -124.551193,
+      "dateTime": "2026-09-08T20:42:30.000Z"
     }
   },
   {
@@ -964,9 +964,9 @@
     "name": "229h DFNA",
     "vin": "1FTYR2CM7KKB58426",
     "gps": {
-      "latitude": 49.2053642,
-      "longitude": -124.032669,
-      "dateTime": "2026-09-08T17:46:27.207Z"
+      "latitude": 49.3367729,
+      "longitude": -124.368675,
+      "dateTime": "2026-09-08T20:43:39.000Z"
     }
   },
   {
@@ -974,9 +974,9 @@
     "name": "DFNA 232 - Victoria (Craig)",
     "vin": "1FTYR2CM9KKB58427",
     "gps": {
-      "latitude": 48.414875,
-      "longitude": -123.325302,
-      "dateTime": "2026-09-08T17:46:24.317Z"
+      "latitude": 48.4371681,
+      "longitude": -123.369202,
+      "dateTime": "2026-09-08T20:42:42.927Z"
     }
   },
   {
@@ -1004,9 +1004,9 @@
     "name": "616 DFNA",
     "vin": "1FTBR2Y84PKA44702",
     "gps": {
-      "latitude": 49.2617493,
-      "longitude": -124.19648,
-      "dateTime": "2026-09-08T17:46:33.000Z"
+      "latitude": 50.0039482,
+      "longitude": -125.243546,
+      "dateTime": "2026-09-08T20:43:46.000Z"
     }
   },
   {
@@ -1034,9 +1034,9 @@
     "name": "575 DFNA - Spare",
     "vin": "1GCWGAFPXK1299266",
     "gps": {
-      "latitude": 49.0404587,
-      "longitude": -123.865974,
-      "dateTime": "2026-09-08T17:25:42.133Z"
+      "latitude": 49.7205963,
+      "longitude": -125.09655,
+      "dateTime": "2026-09-08T20:43:50.000Z"
     }
   },
   {
@@ -1044,9 +1044,9 @@
     "name": "210 DFNA",
     "vin": "1FTYR2CM4HKB44668",
     "gps": {
-      "latitude": 49.0405121,
-      "longitude": -123.865433,
-      "dateTime": "2026-09-08T17:12:45.337Z"
+      "latitude": 49.1934128,
+      "longitude": -123.979561,
+      "dateTime": "2026-09-08T20:43:21.623Z"
     }
   },
   {
@@ -1054,9 +1054,9 @@
     "name": "239 DFNA",
     "vin": "1FTBR3X81MKA00658",
     "gps": {
-      "latitude": 49.2588539,
-      "longitude": -124.809731,
-      "dateTime": "2026-09-08T17:46:31.000Z"
+      "latitude": 48.9437637,
+      "longitude": -125.552605,
+      "dateTime": "2026-09-08T20:42:24.193Z"
     }
   },
   {
@@ -1064,9 +1064,9 @@
     "name": "562 DFNA",
     "vin": "1GCWGBFPXK1251174",
     "gps": {
-      "latitude": 49.040699,
-      "longitude": -123.865334,
-      "dateTime": "2026-09-08T17:33:19.080Z"
+      "latitude": 49.0407295,
+      "longitude": -123.865341,
+      "dateTime": "2026-09-08T20:11:29.923Z"
     }
   },
   {
@@ -1084,9 +1084,9 @@
     "name": "591 DFNA ",
     "vin": "1FTBR1C80MKA08860",
     "gps": {
-      "latitude": 49.2528839,
-      "longitude": -124.164108,
-      "dateTime": "2026-09-08T17:46:33.550Z"
+      "latitude": 49.2412071,
+      "longitude": -124.793297,
+      "dateTime": "2026-09-08T20:43:22.770Z"
     }
   },
   {
@@ -1094,9 +1094,9 @@
     "name": "563 DFNA",
     "vin": "1GTW7BFF9H1266703",
     "gps": {
-      "latitude": 49.005146,
-      "longitude": -123.833038,
-      "dateTime": "2026-09-08T17:46:30.487Z"
+      "latitude": 49.7029495,
+      "longitude": -124.967346,
+      "dateTime": "2026-09-08T20:43:17.000Z"
     }
   },
   {
@@ -1104,9 +1104,9 @@
     "name": "608 DFNA",
     "vin": "1FTBR2C84RKB36595",
     "gps": {
-      "latitude": 49.0580864,
-      "longitude": -123.877502,
-      "dateTime": "2026-09-08T17:46:23.000Z"
+      "latitude": 49.2718124,
+      "longitude": -124.329483,
+      "dateTime": "2026-09-08T20:43:56.513Z"
     }
   },
   {
@@ -1114,9 +1114,9 @@
     "name": "602 DFNA",
     "vin": "1FTBR2C82RKB36398",
     "gps": {
-      "latitude": 49.040432,
-      "longitude": -123.866676,
-      "dateTime": "2026-09-08T17:46:31.000Z"
+      "latitude": 49.1077499,
+      "longitude": -123.853462,
+      "dateTime": "2026-09-08T20:43:29.130Z"
     }
   },
   {
@@ -1134,9 +1134,9 @@
     "name": "609 DFNA",
     "vin": "1FTBR2C83RKB36619",
     "gps": {
-      "latitude": 49.0403442,
-      "longitude": -123.866531,
-      "dateTime": "2026-09-08T17:18:12.073Z"
+      "latitude": 49.2769623,
+      "longitude": -124.190659,
+      "dateTime": "2026-09-08T20:43:46.000Z"
     }
   },
   {
@@ -1144,9 +1144,9 @@
     "name": "604 DFNA",
     "vin": "1FTBR2C8XRKB37069",
     "gps": {
-      "latitude": 49.1703415,
-      "longitude": -123.982269,
-      "dateTime": "2026-09-08T17:46:30.000Z"
+      "latitude": 49.6883163,
+      "longitude": -124.995842,
+      "dateTime": "2026-09-08T20:43:11.500Z"
     }
   },
   {
@@ -1154,9 +1154,9 @@
     "name": "238 DFNA",
     "vin": "1FTBR3X87MKA27427",
     "gps": {
-      "latitude": 49.23666,
-      "longitude": -124.04435,
-      "dateTime": "2026-09-08T17:46:08.000Z"
+      "latitude": 49.0723877,
+      "longitude": -123.881226,
+      "dateTime": "2026-09-08T20:44:02.000Z"
     }
   },
   {
@@ -1174,9 +1174,9 @@
     "name": "219 DFNA",
     "vin": "1FTYR2CM2HKB44667",
     "gps": {
-      "latitude": 49.0405502,
-      "longitude": -123.86528,
-      "dateTime": "2026-09-08T17:31:23.443Z"
+      "latitude": 49.2050819,
+      "longitude": -124.018585,
+      "dateTime": "2026-09-08T20:43:00.000Z"
     }
   },
   {
@@ -1194,9 +1194,9 @@
     "name": "257 DFNA",
     "vin": "1FTBW3U81PKB84582",
     "gps": {
-      "latitude": 49.040535,
-      "longitude": -123.865143,
-      "dateTime": "2026-09-08T17:30:02.057Z"
+      "latitude": 49.1825638,
+      "longitude": -123.971184,
+      "dateTime": "2026-09-08T20:41:48.000Z"
     }
   },
   {
@@ -1204,9 +1204,9 @@
     "name": "544 DFNA",
     "vin": "1GTW7BFFXH1327816",
     "gps": {
-      "latitude": 49.0409393,
-      "longitude": -123.865372,
-      "dateTime": "2026-09-08T17:40:59.417Z"
+      "latitude": 49.6814079,
+      "longitude": -124.931908,
+      "dateTime": "2026-09-08T20:43:56.607Z"
     }
   },
   {
@@ -1214,9 +1214,9 @@
     "name": "586 DFNA",
     "vin": "1FTBR2CG9RKA36905",
     "gps": {
-      "latitude": 49.0055122,
-      "longitude": -123.83313,
-      "dateTime": "2026-09-08T17:46:47.000Z"
+      "latitude": 49.2591629,
+      "longitude": -124.810303,
+      "dateTime": "2026-09-08T20:43:32.073Z"
     }
   }
 ]
